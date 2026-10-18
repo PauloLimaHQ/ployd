@@ -2,7 +2,7 @@
  * Goal Orchestration engine — the loop that keeps an orchestrator session moving.
  *
  * An orchestrator (server/orchestrator.ts, launched by runner.orchestrate) plans one
- * high-level goal for one repo, spawns worker tasks onto the board over Sr. Popo's
+ * high-level goal for one repo, spawns worker tasks onto the board over Ployd's
  * own MCP server, then ends its turn as `waiting` with the ids of the workers whose
  * results it needs. This module is what wakes it back up: it watches the SSE bus
  * and, once a watched worker lands in a terminal state (`validation` / `done` /

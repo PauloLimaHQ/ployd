@@ -1,4 +1,4 @@
-/* Sr. Popo — deeplinks. No build step: native ES module. */
+/* Ployd — deeplinks. No build step: native ES module. */
 import { state } from '../core/state.js';
 import { openDrawer } from './drawer.js';
 

@@ -1,4 +1,4 @@
-/* Sr. Popo — state. No build step: native ES module.
+/* Ployd — state. No build step: native ES module.
  *
  * The shared board state and the few helpers every feature needs. This module
  * imports nothing from features/ on purpose — it is the bottom of the graph.
@@ -44,7 +44,7 @@ const state = {
   // /api/health: which agent CLIs exist on this machine. Read by the terminal's
   // new-session picker so it only offers a CLI that's actually installed.
   health: null,
-  askId: null, // the in-flight "Ask Sr. Popo" session id (see modal-ask), or null
+  askId: null, // the in-flight "Ask Ployd" session id (see modal-ask), or null
   askText: '', // assistant text streamed so far for the open ask session
 };
 
@@ -68,7 +68,7 @@ function setAutoApproveLocal(taskId, on) {
 
 // In the desktop app native notifications are fired by the Electron shell; in a
 // plain browser we fall back to the Web Notifications API from here.
-const isElectron = !!(window.srpopo && window.srpopo.isElectron);
+const isElectron = !!(window.ployd && window.ployd.isElectron);
 
 // Dot colors are mid-tones chosen to read on both the light "paper" and dark
 // surfaces; running uses Claude's terracotta accent to match the theme.
@@ -109,6 +109,6 @@ const MOD = IS_MAC ? '⌘' : 'Ctrl';
 
 // Inline SVG icon (Lucide, via icons.js). Returns trusted markup — insert it
 // into templates directly, never through esc(). No emojis in the UI.
-const icon = (name, opts) => (window.srpopoIcons ? window.srpopoIcons.svg(name, opts) : '');
+const icon = (name, opts) => (window.ploydIcons ? window.ploydIcons.svg(name, opts) : '');
 
 export { $, COLUMNS, COLUMN_OF_STATUS, GROOMING_COLUMN, IS_MAC, MOD, ORCH_COLUMN, icon, isAutoApprove, isElectron, isGroomingLive, isLive, isOrchestrationLive, pendingPermissions, setAutoApproveLocal, setPendingPermissions, state };

@@ -1,7 +1,7 @@
 {
-  "name": "srpopo",
+  "name": "ployd",
   "version": "0.17.0",
-  "description": "Sr. Popo — local orchestrator hub for coding-agent tasks across your repos",
+  "description": "Ployd — local orchestrator hub for coding-agent tasks across your repos",
   "main": "dist/electron/main.js",
   "scripts": {
     "start": "npm run build && electron .",
@@ -69,7 +69,7 @@
   },
   "build": {
     "appId": "com.pauloperego.srpopo",
-    "productName": "SrPopo",
+    "productName": "Ployd",
     "copyright": "Copyright © 2026 Paulo Lima",
     "asar": true,
     "files": [
@@ -116,7 +116,7 @@
       }
     },
     "dmg": {
-      "title": "Sr. Popo ${version}"
+      "title": "Ployd ${version}"
     },
     "win": {
       "icon": "build/icon.png",

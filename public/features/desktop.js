@@ -1,4 +1,4 @@
-/* Sr. Popo — desktop. No build step: native ES module. */
+/* Ployd — desktop. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { renderEditorSetting, saveSettings } from './settings-modal.js';
@@ -115,7 +115,7 @@ function ideMenuHtml() {
   if (!ready.length) {
     return `<div class="quick-menu-empty">
         <p>No supported IDE found on this machine.</p>
-        <p class="field-hint">Sr. Popo looks for VS Code's <code>code</code> command and the JetBrains
+        <p class="field-hint">Ployd looks for VS Code's <code>code</code> command and the JetBrains
           launchers (<code>idea</code>, <code>webstorm</code>, …). Install one, then rescan from Settings.</p>
       </div>`;
   }

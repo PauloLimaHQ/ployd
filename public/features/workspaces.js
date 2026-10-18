@@ -1,4 +1,4 @@
-/* Sr. Popo — workspaces. No build step: native ES module. */
+/* Ployd — workspaces. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, COLUMNS, COLUMN_OF_STATUS, GROOMING_COLUMN, ORCH_COLUMN, icon, isGroomingLive, isLive, isOrchestrationLive, state } from '../core/state.js';
 import { renderAutonomous } from './autonomous.js';
@@ -14,7 +14,7 @@ import { closeWorkspaceMenu } from './workspace-menu.js';
 
 
 // ---------- workspaces / super view ----------
-const VIEW_KEY = 'srpopo.view';
+const VIEW_KEY = 'ployd.view';
 function saveView() {
   try { localStorage.setItem(VIEW_KEY, JSON.stringify(state.view)); } catch { /* storage unavailable — non-fatal */ }
 }

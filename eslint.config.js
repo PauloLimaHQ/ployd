@@ -61,7 +61,7 @@ module.exports = tseslint.config(
   },
   {
     // icons.js is loaded as a classic script before the module graph, so it
-    // publishes `window.srpopoIcons` instead of exporting.
+    // publishes `window.ploydIcons` instead of exporting.
     files: ['public/icons.js'],
     languageOptions: { sourceType: 'script' },
   },

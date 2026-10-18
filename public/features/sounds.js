@@ -1,4 +1,4 @@
-/* Sr. Popo — sounds. No build step: native ES module. */
+/* Ployd — sounds. No build step: native ES module. */
 import { state } from '../core/state.js';
 
 

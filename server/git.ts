@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
-const WORKTREES_DIR = path.join(os.homedir(), '.srpopo', 'worktrees');
+const WORKTREES_DIR = path.join(os.homedir(), '.ployd', 'worktrees');
 
 function git(repoPath: string, args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -194,7 +194,7 @@ async function addWorktree(
   fs.mkdirSync(WORKTREES_DIR, { recursive: true });
   const repoName = path.basename(repoPath);
   const wtPath = path.join(WORKTREES_DIR, `${repoName}--${slug}-${taskId}`);
-  const branch = branchOverride?.trim() || `srpopo/${slug}-${taskId}`;
+  const branch = branchOverride?.trim() || `ployd/${slug}-${taskId}`;
   const args = ['worktree', 'add', wtPath, '-b', branch];
   if (baseBranch?.trim()) args.push(baseBranch.trim());
   await git(repoPath, args);

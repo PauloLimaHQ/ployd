@@ -5,8 +5,10 @@ import crypto from 'crypto';
 import type { Db, Grooming, LogEvent, Orchestration, Repo, Settings, Task, UsageEntry } from './types';
 
 // When embedded in Electron the packaged app dir is read-only, so the main
-// process points us at a writable per-user location via SRPOPO_DATA_DIR.
-const DATA_DIR = process.env.SRPOPO_DATA_DIR || path.join(__dirname, '..', 'data');
+// process points us at a writable per-user location via PLOYD_DATA_DIR.
+// SRPOPO_DATA_DIR is the variable's name from before the rename, still honored
+// so a setup that exports it by hand keeps pointing at the same data.
+const DATA_DIR = process.env.PLOYD_DATA_DIR || process.env.SRPOPO_DATA_DIR || path.join(__dirname, '..', 'data');
 const DB_PATH = path.join(DATA_DIR, 'db.json');
 const LOGS_DIR = path.join(DATA_DIR, 'logs');
 // Append-only usage ledger (see server/usage.ts) — one JSON line per model per
@@ -55,7 +57,7 @@ const DEFAULT_SETTINGS: Settings = {
   // Off by default: the resource monitor polls the OS process table, so it only
   // samples once the user turns it on in Settings (see server/resources.ts).
   resourceMonitor: false,
-  // On by default: a task's session should see Sr. Popo's own MCP servers and
+  // On by default: a task's session should see Ployd's own MCP servers and
   // nothing else. Inheriting the user's global MCP config costs a child process
   // + a full tool schema set per session, multiplied by every parallel run.
   isolateMcpServers: true,

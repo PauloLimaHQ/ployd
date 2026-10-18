@@ -1,4 +1,4 @@
-/* Sr. Popo — settings. No build step: native ES module. */
+/* Ployd — settings. No build step: native ES module. */
 import { toast } from '../core/api.js';
 import { $, isElectron, state } from '../core/state.js';
 import { renderAutonomous } from './autonomous.js';
@@ -54,7 +54,7 @@ function maybeNotifyBrowser(prev, task) {
     title = `Task finished — ${task.title}`;
     body = task.repoName;
   }
-  showBrowserNotification(title, { body, tag: `srpopo-${task.id}` });
+  showBrowserNotification(title, { body, tag: `ployd-${task.id}` });
 }
 
 // Play a cue when a task leaves the running state — in both browser and
@@ -83,7 +83,7 @@ function maybeNotifyGroomingBrowser(prev, g) {
     title = `Idea groomed — ${g.title}`;
     body = `${g.repoName} · ${n} task${n === 1 ? '' : 's'} created`;
   }
-  showBrowserNotification(title, { body, tag: `srpopo-${g.id}` });
+  showBrowserNotification(title, { body, tag: `ployd-${g.id}` });
 }
 
 function maybePlayGroomingSound(prev, g) {
@@ -114,7 +114,7 @@ function maybeNotifyOrchestrationBrowser(prev, o) {
     title = `Goal complete — ${o.title}`;
     body = `${o.repoName} · ${n} worker task${n === 1 ? '' : 's'}`;
   }
-  showBrowserNotification(title, { body, tag: `srpopo-${o.id}` });
+  showBrowserNotification(title, { body, tag: `ployd-${o.id}` });
 }
 
 function maybePlayOrchestrationSound(prev, o) {
@@ -130,7 +130,7 @@ function updateNotifNote() {
   if (Notification.permission === 'denied') {
     note.textContent = 'Blocked — enable notifications for this site in your browser settings.';
   } else {
-    note.textContent = 'Shown by your browser while Sr. Popo is open.';
+    note.textContent = 'Shown by your browser while Ployd is open.';
   }
 }
 

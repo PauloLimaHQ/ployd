@@ -62,7 +62,7 @@ function extraPathDirs(): string[] {
 function loginShellPath(): string | null {
   if (process.platform === 'win32') return null;
   const shellBin = process.env.SHELL || '/bin/zsh';
-  const marker = '__SRPOPO_PATH__';
+  const marker = '__PLOYD_PATH__';
   try {
     // -l => login shell, so profile files load. A sentinel marker lets us extract
     // PATH cleanly even if the shell prints other noise.

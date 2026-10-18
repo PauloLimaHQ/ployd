@@ -21,6 +21,14 @@ function extractJson(text: unknown, start: string, end: string): string | null {
   const s = text.lastIndexOf(start);
   const e = text.lastIndexOf(end);
   if (s !== -1 && e > s) return text.slice(s + start.length, e).trim();
+  // A session started before the rename was told the old `@@SRPOPO_*@@` markers
+  // and keeps using them when it's resumed (the orchestrator's status digest
+  // doesn't restate them), so accept that pair before falling back further.
+  const legacyStart = start.replace('@@PLOYD_', '@@SRPOPO_');
+  const legacyEnd = end.replace('@@PLOYD_', '@@SRPOPO_');
+  const ls = text.lastIndexOf(legacyStart);
+  const le = text.lastIndexOf(legacyEnd);
+  if (legacyStart !== start && ls !== -1 && le > ls) return text.slice(ls + legacyStart.length, le).trim();
   const fences = [...text.matchAll(/```json\s*([\s\S]*?)```/gi)];
   if (fences.length) return fences[fences.length - 1][1].trim();
   const open = text.indexOf('{');

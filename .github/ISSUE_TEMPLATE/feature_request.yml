@@ -1,11 +1,11 @@
 name: 💡 Feature request
-description: Suggest an improvement to Sr. Popo
+description: Suggest an improvement to Ployd
 labels: [enhancement]
 body:
   - type: markdown
     attributes:
       value: |
-        Sr. Popo aims to stay **simple, local-first, and dependency-light**. Ideas that
+        Ployd aims to stay **simple, local-first, and dependency-light**. Ideas that
         fit that spirit are the easiest to land.
   - type: textarea
     id: problem
@@ -18,7 +18,7 @@ body:
     id: proposal
     attributes:
       label: Proposed solution
-      description: What would you like Sr. Popo to do?
+      description: What would you like Ployd to do?
     validations:
       required: true
   - type: textarea

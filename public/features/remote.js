@@ -1,4 +1,4 @@
-/* Sr. Popo — remote. No build step: native ES module. */
+/* Ployd — remote. No build step: native ES module. */
 import { esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { saveSettings } from './settings-modal.js';
@@ -68,7 +68,7 @@ export function init() {
   $('#setting-remote-access').addEventListener('change', async (e) => {
     const enabled = e.target.checked;
     if (enabled && !confirm(
-      'Enable remote access?\n\nSr. Popo will be reachable from other devices on your ' +
+      'Enable remote access?\n\nPloyd will be reachable from other devices on your ' +
       'local network. Anyone with the link and token can control your tasks and repos. ' +
       'Only do this on a network you trust.')) {
       e.target.checked = false;

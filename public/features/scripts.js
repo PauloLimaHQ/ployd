@@ -1,4 +1,4 @@
-/* Sr. Popo — scripts. No build step: native ES module. */
+/* Ployd — scripts. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { anchorMenu, menuArrowNav } from './desktop.js';

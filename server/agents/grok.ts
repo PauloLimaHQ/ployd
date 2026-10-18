@@ -68,7 +68,7 @@ const RESEARCH_TOOLS = 'read_file,grep,list_dir';
 
 // Map a task's permission mode onto Grok's. The two vocabularies overlap almost
 // exactly (Grok accepts default | acceptEdits | auto | dontAsk |
-// bypassPermissions | plan), with one deliberate translation: Sr. Popo's
+// bypassPermissions | plan), with one deliberate translation: Ployd's
 // 'default' means "ask", and a headless run has nobody to ask — Grok has no
 // approval hook we can bridge the way Claude's --permission-prompt-tool lets us
 // (see "Interactive permissions" in CLAUDE.md). `dontAsk` is the mode that
@@ -147,7 +147,7 @@ function groomArgs(grooming: Pick<Grooming, 'model' | 'sessionId'>, resume = fal
  * `cleanup` the runner calls once the child is gone.
  */
 function promptArgs(prompt: string): PromptDelivery {
-  const file = path.join(os.tmpdir(), `srpopo-grok-${crypto.randomUUID()}.md`);
+  const file = path.join(os.tmpdir(), `ployd-grok-${crypto.randomUUID()}.md`);
   fs.writeFileSync(file, prompt, { mode: 0o600 });
   return {
     args: ['--prompt-file', file],
@@ -157,7 +157,7 @@ function promptArgs(prompt: string): PromptDelivery {
 
 // Subscription-only env: strip XAI_API_KEY so a run always uses the `grok login`
 // credentials, never a metered API key. The shared base already drops the
-// nested-session markers. Grok has no custom-model env layer in Sr. Popo (that's
+// nested-session markers. Grok has no custom-model env layer in Ployd (that's
 // a Claude/Bedrock concept), so `model` is unused here.
 function childEnv(_model: string | undefined): NodeJS.ProcessEnv {
   const env = baseChildEnv();

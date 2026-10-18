@@ -1,4 +1,4 @@
-/* Sr. Popo — task-modal. No build step: native ES module. */
+/* Ployd — task-modal. No build step: native ES module. */
 import { api, esc, lookup, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { renderBoard } from './board.js';
@@ -243,7 +243,7 @@ function syncWorktreeFields() {
 
 // Remember the settings used on the last created task so a new task defaults
 // to them instead of the hardcoded defaults — no need to re-pick every time.
-const LAST_USED_KEY = 'srpopo.lastTaskSettings';
+const LAST_USED_KEY = 'ployd.lastTaskSettings';
 function loadLastUsed() {
   try { return JSON.parse(localStorage.getItem(LAST_USED_KEY)) || {}; }
   catch { return {}; }
@@ -410,7 +410,7 @@ function syncBranchHint(ws) {
   $('#task-branch').placeholder = template || 'e.g. feature/ABC-123, matching your repo\'s convention';
   $('#task-branch-hint').innerHTML = template
     ? `— optional, defaults to this workspace's <code>${esc(template)}</code>`
-    : '— optional, defaults to <code>srpopo/&lt;task&gt;-&lt;id&gt;</code>';
+    : '— optional, defaults to <code>ployd/&lt;task&gt;-&lt;id&gt;</code>';
 }
 
 function openTaskModal(task = null) {

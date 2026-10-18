@@ -152,7 +152,7 @@ async function setMergeableLabel(
   await gh(cwd, [
     'label', 'create', name,
     '--color', MERGEABLE_LABEL_COLORS[g],
-    '--description', `Sr. Popo code review grade ${g}/5`,
+    '--description', `Ployd code review grade ${g}/5`,
   ]);
 
   for (const other of MERGEABLE_LABELS) {

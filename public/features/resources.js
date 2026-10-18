@@ -1,4 +1,4 @@
-/* Sr. Popo — resources. No build step: native ES module. */
+/* Ployd — resources. No build step: native ES module. */
 import { api, esc } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { fmtBytes } from './task-modal.js';
@@ -6,7 +6,7 @@ import { fmtBytes } from './task-modal.js';
 
 // ---------- resource monitor ----------
 // Opt-in (Settings → General → Resource monitor). While on, the top-bar chip
-// shows what Sr. Popo + its agent sessions are costing this machine, and
+// shows what Ployd + its agent sessions are costing this machine, and
 // clicking it opens a per-session breakdown. Poll-based rather than SSE: this
 // is sampled state, not an event, and polling stops the moment the feature is
 // off, the tab is hidden, or the server stops answering. Everything the panel
@@ -74,7 +74,7 @@ function renderResourcePanel() {
     memPercent: memPct,
   }));
 
-  html.push('<div class="res-group-title">Sr. Popo</div>');
+  html.push('<div class="res-group-title">Ployd</div>');
   html.push(resourceRowHtml({
     iconName: 'sliders-horizontal',
     name: 'App (board, server, terminals)',
@@ -133,7 +133,7 @@ function renderResourceChip() {
   const sysCpu = snap.system.cpuPercent || 0;
   chip.classList.toggle('hot', sysCpu >= 85);
   chip.classList.toggle('warm', sysCpu >= 60 && sysCpu < 85);
-  chip.title = `Sr. Popo + ${snap.agents.length} agent session${snap.agents.length === 1 ? '' : 's'}: `
+  chip.title = `Ployd + ${snap.agents.length} agent session${snap.agents.length === 1 ? '' : 's'}: `
     + `${fmtCpu(cpu)} CPU · ${fmtBytes(snap.totals.rssBytes)} memory\n`
     + `This machine: ${fmtCpu(snap.system.cpuPercent)} CPU · ${fmtBytes(snap.system.memUsedBytes)} of ${fmtBytes(snap.system.memTotalBytes)} used\n`
     + 'Click for a per-session breakdown';

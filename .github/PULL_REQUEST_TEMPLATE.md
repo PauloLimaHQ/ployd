@@ -1,4 +1,4 @@
-<!-- Thanks for contributing to Sr. Popo! Keep changes small and focused. -->
+<!-- Thanks for contributing to Ployd! Keep changes small and focused. -->
 
 ## What & why
 

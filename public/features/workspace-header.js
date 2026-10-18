@@ -1,4 +1,4 @@
-/* Sr. Popo — workspace-header. No build step: native ES module. */
+/* Ployd — workspace-header. No build step: native ES module. */
 import { api, toast } from '../core/api.js';
 import { $, state } from '../core/state.js';
 import { autonomousForWorkspace, openAutonomousModal, startAutonomous, stopAutonomous } from './autonomous.js';

@@ -1,4 +1,4 @@
-/* Sr. Popo — filters. No build step: native ES module. */
+/* Ployd — filters. No build step: native ES module. */
 import { $, state } from '../core/state.js';
 import { renderBoard } from './board.js';
 
@@ -17,7 +17,7 @@ function taskMatchesFilters(t) {
 
 const filtersActive = () => !!state.filters.search;
 
-const FILTER_KEY = 'srpopo.filters';
+const FILTER_KEY = 'ployd.filters';
 function saveFilters() {
   try {
     localStorage.setItem(FILTER_KEY, JSON.stringify({ search: state.filters.search }));

@@ -1,5 +1,5 @@
 /*
- * Shared types for Sr. Popo's Node-side code. These describe the persisted data
+ * Shared types for Ployd's Node-side code. These describe the persisted data
  * (repos/tasks/settings) and the small message/decision shapes that flow between
  * the runner, the permission bridge, and the SSE bus. Typing is additive — it
  * mirrors the objects the code already builds; it does not change any behavior.
@@ -80,7 +80,7 @@ export interface Settings {
   // until the user picks one, either here or from the button's own picker.
   defaultEditor: string;
   // The parent directory of the last repo folder picked via the native "Add
-  // Repository" dialog (electron/main.ts's srpopo:pick-folder). Empty until the
+  // Repository" dialog (electron/main.ts's ployd:pick-folder). Empty until the
   // first pick. Electron-main-process-only — never sent to the renderer (not in
   // PublicSettings); it just seeds the dialog's defaultPath so it reopens where
   // the user left off instead of the OS default every time.
@@ -91,7 +91,7 @@ export interface Settings {
   // on, the board shows a top-bar chip with a breakdown panel behind it.
   resourceMonitor: boolean;
   // When on (the default), every spawned `claude` session runs with
-  // `--strict-mcp-config`, so it sees only the MCP servers Sr. Popo registers
+  // `--strict-mcp-config`, so it sees only the MCP servers Ployd registers
   // itself (the permission bridge, the board server) and none of the user's
   // global/project ones. Those are loaded into EVERY session otherwise — each
   // stdio server is another child process per session, and their tool schemas
@@ -155,7 +155,7 @@ export interface PluginInfo {
 // new tasks / groomings in this repo are prefilled with. Sanitized and applied
 // by server/repoSettings.ts, which is the single source of truth for them.
 //
-// **Every field is optional, and an absent key means "no opinion — use Sr. Popo's
+// **Every field is optional, and an absent key means "no opinion — use Ployd's
 // built-in default"**. That is what makes "is this workspace configured?" a plain
 // `Object.keys(...).length > 0` test, and what lets old db.json files load with
 // no migration at all. These are *defaults*, never overrides: a task's own value
@@ -163,7 +163,7 @@ export interface PluginInfo {
 // autonomous budget, …) are untouched by them.
 export interface RepoSettings {
   // Branch naming for worktree tasks in this repo. Tokens: {slug} {id} {date}.
-  // Absent -> git.addWorktree's own `srpopo/<slug>-<id>`.
+  // Absent -> git.addWorktree's own `ployd/<slug>-<id>`.
   branchTemplate?: string;
   // Default base branch new work is cut from. Absent -> the repo's current HEAD.
   baseBranch?: string;
@@ -322,7 +322,7 @@ export type OrchestrationMode = 'autonomous' | 'manual';
 
 // A "Orchestrate a Goal" card. Lives in db.orchestrations with its own locked
 // board column and lifecycle. The orchestrator session is read-only in the repo
-// — it plans and coordinates, and only ever mutates the board through Sr. Popo's
+// — it plans and coordinates, and only ever mutates the board through Ployd's
 // own MCP server (server/mcp.ts); the worker tasks it spawns do all the editing,
 // so there is never a worktree of its own to clean up.
 export interface Orchestration {
@@ -425,7 +425,7 @@ export interface Task {
   // User-editable override for the worktree branch name (e.g. to match a repo's
   // own branch convention or reuse a Linear issue's identifier). Only takes
   // effect up to the point the worktree is materialized; null falls back to the
-  // auto-generated `srpopo/<slug>-<id>` name.
+  // auto-generated `ployd/<slug>-<id>` name.
   branchName: string | null;
   // Branch the task's work is based on. For a worktree task it's the start point
   // the new branch is cut from; for a direct (non-worktree) task the branch the
@@ -476,7 +476,7 @@ export interface Task {
   autoApprovePermissions?: boolean;
 }
 
-// A short-lived "Ask Sr. Popo" Q&A session (see server/ask.ts, runner.ask).
+// A short-lived "Ask Ployd" Q&A session (see server/ask.ts, runner.ask).
 // Unlike Task/Grooming, never persisted to db.json — it exists only in memory
 // for the life of its `claude` child, driven through the same runner.launch()
 // plumbing dispatch/groom use so it counts against maxParallelSessions and is

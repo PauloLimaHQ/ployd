@@ -8,7 +8,7 @@
  * A task's own value always wins, and the app-wide `Settings` (merge strategy,
  * minimum merge grade, autonomous budget, …) are untouched by any of this.
  *
- * Every field is optional and an absent key means "no opinion — use Sr. Popo's
+ * Every field is optional and an absent key means "no opinion — use Ployd's
  * built-in default", so `configured()` is a plain "is anything set?" test and an
  * existing db.json loads unchanged (see RepoSettings in server/types.ts).
  *
@@ -120,7 +120,7 @@ const ILLEGAL = /[\x00-\x1f\x7f~^:?*[\\]/g;
  * `.lock`) are trimmed off. Case is left alone.
  *
  * Returns null when the template is blank or sanitizes down to nothing, so the
- * caller falls back to the built-in `srpopo/<slug>-<id>` name.
+ * caller falls back to the built-in `ployd/<slug>-<id>` name.
  *
  * Uniqueness is deliberately NOT handled here: a template that omits `{id}` and
  * `{slug}` can resolve to the same branch for two tasks, and `git worktree add`

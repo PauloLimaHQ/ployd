@@ -1,4 +1,4 @@
-/* Sr. Popo — repos-modal. No build step: native ES module. */
+/* Ployd — repos-modal. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { makeSortable, reorderRepos } from './workspaces.js';
@@ -50,11 +50,11 @@ export function init() {
   makeSortable($('#super-view'), '.workspace-card', 'repo', reorderRepos);
 
   // In Electron, offer a native folder picker instead of typing the path by hand.
-  if (window.srpopo && window.srpopo.isElectron) {
+  if (window.ployd && window.ployd.isElectron) {
     const browse = $('#repo-browse');
     browse.classList.remove('hidden');
     browse.addEventListener('click', async () => {
-      const picked = await window.srpopo.pickFolder();
+      const picked = await window.ployd.pickFolder();
       if (picked) await addRepo(picked);
     });
   }

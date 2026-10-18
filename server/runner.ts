@@ -652,7 +652,7 @@ function groom(
 
 /**
  * Run one turn of a goal orchestration's orchestrator session: a read-only Claude
- * session that plans the goal and drives the board through Sr. Popo's own MCP
+ * session that plans the goal and drives the board through Ployd's own MCP
  * server (see orchestrateArgs in server/agents/claude.ts — research tools plus
  * the board tools, never a write tool and never a worktree).
  *
@@ -776,7 +776,7 @@ function orchestrate(
 }
 
 /**
- * Run a short, read-only "Ask Sr. Popo" Q&A session in a repo. Unlike
+ * Run a short, read-only "Ask Ployd" Q&A session in a repo. Unlike
  * dispatch/groom, the session is ephemeral: `session` is a plain in-memory
  * record (never a Task/Grooming, never persisted), so it drives the same
  * launch() plumbing but its `emit` only broadcasts — nothing is ever

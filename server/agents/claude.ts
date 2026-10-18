@@ -29,7 +29,7 @@ const DEFAULT_ALLOWED_TOOLS = ['Bash(npm:*)', 'Bash(pnpm:*)', 'Bash(yarn:*)'];
 // Interactive permission prompting (see permissions.ts + permission-mcp.js). When
 // a task opts in, we register our MCP bridge and tell the CLI to route any tool it
 // would otherwise auto-deny through it, so the user can approve from the board.
-const MCP_SERVER_NAME = 'srpopo';
+const MCP_SERVER_NAME = 'ployd';
 const PERMISSION_TOOL = `mcp__${MCP_SERVER_NAME}__approve`;
 // The bridge stays plain JavaScript so it runs without a TS loader when the CLI
 // spawns it as a standalone Node process (in dev under tsx and in the packaged
@@ -48,7 +48,7 @@ function resolvedBaseUrl(): string {
 
 // The `--mcp-config` JSON that registers the permission bridge for a task. The
 // bridge runs as plain Node even inside the packaged Electron binary via
-// ELECTRON_RUN_AS_NODE, and learns where to POST via SRPOPO_APPROVAL_URL.
+// ELECTRON_RUN_AS_NODE, and learns where to POST via PLOYD_APPROVAL_URL.
 function permissionMcpConfig(task: Partial<Task>): string {
   return JSON.stringify({
     mcpServers: {
@@ -57,7 +57,7 @@ function permissionMcpConfig(task: Partial<Task>): string {
         args: [PERMISSION_MCP_SCRIPT],
         env: {
           ELECTRON_RUN_AS_NODE: '1',
-          SRPOPO_APPROVAL_URL: `${resolvedBaseUrl()}/api/tasks/${task.id}/permission`,
+          PLOYD_APPROVAL_URL: `${resolvedBaseUrl()}/api/tasks/${task.id}/permission`,
         },
       },
     },
@@ -212,7 +212,7 @@ function effectiveAllowedTools(task: Partial<Task>): string {
  * process per session, each remote one another connection, and all of their tool
  * schemas ride along in every single request. Multiplied by maxParallelSessions
  * that is a large, invisible chunk of what an agent session costs this machine.
- * A Sr. Popo run is a headless, scripted session with an explicit allow-list; the
+ * A Ployd run is a headless, scripted session with an explicit allow-list; the
  * MCP servers it is meant to use are the ones we register ourselves.
  *
  * Every arg builder ends with this so the behavior is uniform: a task keeps the
@@ -286,9 +286,9 @@ function reviewArgs(task: Pick<Task, 'model' | 'agent'>): string[] {
   return args;
 }
 
-// Sr. Popo's own board MCP server (server/mcp.ts, mounted at POST /mcp) as the
+// Ployd's own board MCP server (server/mcp.ts, mounted at POST /mcp) as the
 // orchestrator session sees it. Named distinctly from the per-task permission
-// bridge above ('srpopo') so the two can never be confused: this one drives the
+// bridge above ('ployd') so the two can never be confused: this one drives the
 // board, that one asks the user about a tool.
 const BOARD_MCP_SERVER_NAME = 'board';
 const BOARD_TOOLS = ['list_repos', 'list_tasks', 'get_task', 'create_task', 'dispatch_task', 'stop_task']

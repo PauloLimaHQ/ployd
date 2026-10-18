@@ -1,4 +1,4 @@
-/* Sr. Popo — drawer-close. No build step: native ES module. */
+/* Ployd — drawer-close. No build step: native ES module. */
 import { $ } from '../core/state.js';
 import { closeContextMenu } from './context-menu.js';
 import { closeIdeMenu, ideMenuOpen, idePick } from './desktop.js';

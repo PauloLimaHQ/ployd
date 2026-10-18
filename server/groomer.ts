@@ -17,15 +17,15 @@
  * verbatim even when the groomed prompts themselves contain markdown, braces, or
  * code fences:
  *   - `{ "questions": [ … ] }` — it needs the developer to clarify something
- *     before it can write a good spec (Sr. Popo surfaces these, collects the
+ *     before it can write a good spec (Ployd surfaces these, collects the
  *     answers, and resumes the session), or
  *   - `{ "tasks": [ … ] }`     — it has finished and is proposing task specs.
  */
 
 import * as sentinels from './sentinels';
 
-const SPEC_START = '@@SRPOPO_SPEC_START@@';
-const SPEC_END = '@@SRPOPO_SPEC_END@@';
+const SPEC_START = '@@PLOYD_SPEC_START@@';
+const SPEC_END = '@@PLOYD_SPEC_END@@';
 
 // One groomed task as the session proposes it. `ready` is the session's own
 // judgment that the prompt is self-contained enough to dispatch unreviewed —
@@ -90,7 +90,7 @@ function metaPrompt(idea: unknown, memory?: string): string {
   if (memory && memory.trim()) {
     lines.push(
       '',
-      'What Sr. Popo remembers about this project (accumulated from past sessions; treat as helpful',
+      'What Ployd remembers about this project (accumulated from past sessions; treat as helpful',
       'context, verify against the code when it matters):',
       '"""',
       memory.trim(),

@@ -1,4 +1,4 @@
-/* Sr. Popo — sidebar. No build step: native ES module. */
+/* Ployd — sidebar. No build step: native ES module. */
 import { esc } from '../core/api.js';
 import { $, COLUMNS, COLUMN_OF_STATUS, GROOMING_COLUMN, ORCH_COLUMN, icon, isGroomingLive, isLive, isOrchestrationLive, pendingPermissions, state } from '../core/state.js';
 import { openContextMenu } from './context-menu.js';

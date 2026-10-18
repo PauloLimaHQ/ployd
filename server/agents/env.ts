@@ -8,7 +8,7 @@
  */
 
 // A copy of the current process env with the nested-session markers removed, so
-// Sr. Popo can itself be launched from Claude Code without confusing the child
+// Ployd can itself be launched from Claude Code without confusing the child
 // (invariant #3). Provider adapters layer their own secret stripping on top.
 export function baseChildEnv(): NodeJS.ProcessEnv {
   const env = { ...process.env };

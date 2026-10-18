@@ -1,7 +1,9 @@
-/* ── Sr. Popo — warm "paper" theme, Claude-desktop inspired ──────
+/* ── Ployd — warm "paper" theme, Claude-desktop inspired ──────
    Light is the base; dark overrides the same token names so component
    rules never need to branch. Theme follows the OS by default and can
-   be pinned to light/dark via data-theme on <html> (see app.js). */
+   be pinned to light/dark via data-theme on <html> (see theme.js).
+   A color theme (data-palette) re-tints the same tokens on top — see
+   "color themes" below. */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -22,6 +24,8 @@
   /* Claude terracotta accent */
   --accent: #d97757;
   --accent-soft: #d9775733;
+  /* text on a solid accent fill (primary buttons) — a pale accent needs dark */
+  --accent-text: #fff;
 
   /* semantic hues (retuned for light) */
   --groom: #b45cc4;
@@ -140,6 +144,169 @@
   --shadow: 0 8px 30px rgba(0, 0, 0, .45);
   --shadow-menu: 0 12px 34px rgba(0, 0, 0, .5);
   --shadow-drawer: -12px 0 40px rgba(0, 0, 0, .5);
+}
+
+/* ── color themes ─────────────────────────────────────────────
+   Orthogonal to light/dark: data-palette on <html> picks the tint, and
+   data-scheme (light | dark, always resolved — the OS preference included —
+   by theme.js and the inline <head> script) picks which half of it applies.
+   Each palette only overrides what it changes; anything it leaves alone
+   falls through to the Paper tokens above for the same scheme, which is why
+   the light half is scoped to :not([data-scheme="dark"]) rather than bare.
+   Semantic hues (green/red/purple…) stay shared so status reads the same in
+   every theme. To add one: a light + dark block here, an <option> in
+   #setting-palette, and an entry in PALETTES (theme.js). */
+
+/* Graphite — neutral grays, blue accent */
+:root[data-palette="graphite"]:not([data-scheme="dark"]) {
+  --bg: #f1f1f3;
+  --bg-raised: #f8f8f9;
+  --bg-card: #ffffff;
+  --bg-hover: #e8e8eb;
+  --border: #e1e1e5;
+  --card-hover-border: #cfcfd5;
+  --text: #18181b;
+  --text-dim: #6b6b74;
+  --accent: #2563eb;
+  --accent-soft: #2563eb2e;
+  --prompt-bg: #eef1fb;
+  --prompt-border: #d3dbf3;
+  --tool-bg: #f3f3f5;
+  --overlay: rgba(20, 20, 24, .34);
+  --shadow: 0 8px 30px rgba(20, 20, 30, .12);
+  --shadow-menu: 0 12px 34px rgba(20, 20, 30, .14);
+  --shadow-drawer: -12px 0 40px rgba(20, 20, 30, .14);
+}
+:root[data-palette="graphite"][data-scheme="dark"] {
+  --bg: #161618;
+  --bg-raised: #1d1d20;
+  --bg-card: #252528;
+  --bg-hover: #2e2e32;
+  --border: #323236;
+  --card-hover-border: #46464c;
+  --text: #ececef;
+  --text-dim: #9d9da6;
+  --accent: #4b8bf5;
+  --accent-soft: #4b8bf533;
+  --prompt-bg: #1f2333;
+  --prompt-border: #343c5c;
+  --tool-bg: #1a1a1c;
+}
+
+/* Nord — arctic blue-grays (nordtheme.com) */
+:root[data-palette="nord"]:not([data-scheme="dark"]) {
+  --bg: #e5e9f0;
+  --bg-raised: #eceff4;
+  --bg-card: #f8f9fb;
+  --bg-hover: #dde2ea;
+  --border: #d3d9e3;
+  --card-hover-border: #bfc7d5;
+  --text: #2e3440;
+  --text-dim: #5f6a7d;
+  --accent: #5e81ac;
+  --accent-soft: #5e81ac33;
+  --prompt-bg: #ebeaf3;
+  --prompt-border: #d4d0e5;
+  --tool-bg: #e9edf3;
+  --overlay: rgba(46, 52, 64, .34);
+  --shadow: 0 8px 30px rgba(46, 52, 64, .14);
+  --shadow-menu: 0 12px 34px rgba(46, 52, 64, .16);
+  --shadow-drawer: -12px 0 40px rgba(46, 52, 64, .16);
+}
+:root[data-palette="nord"][data-scheme="dark"] {
+  --bg: #2e3440;
+  --bg-raised: #353c4a;
+  --bg-card: #3b4252;
+  --bg-hover: #434c5e;
+  --border: #444c5d;
+  --card-hover-border: #5a6479;
+  --text: #eceff4;
+  --text-dim: #a5afc0;
+  --accent: #88c0d0;
+  --accent-soft: #88c0d033;
+  --accent-text: #2e3440;
+  --prompt-bg: #3a3d55;
+  --prompt-border: #555a7a;
+  --tool-bg: #2a2f3a;
+  --blue: #81a1c1;
+  --blue-soft: #81a1c133;
+  --green: #a3be8c;
+  --green-soft: #a3be8c33;
+  --red: #d08770;
+  --red-soft: #d0877033;
+  --purple: #b48ead;
+  --purple-soft: #b48ead33;
+}
+
+/* Solarized — Ethan Schoonover's paired light/dark palette */
+:root[data-palette="solarized"]:not([data-scheme="dark"]) {
+  --bg: #eee8d5;
+  --bg-raised: #f5efdc;
+  --bg-card: #fdf6e3;
+  --bg-hover: #e6dfc8;
+  --border: #ddd5bd;
+  --card-hover-border: #cbc2a6;
+  --text: #073642;
+  --text-dim: #657b83;
+  --accent: #268bd2;
+  --accent-soft: #268bd233;
+  --prompt-bg: #f3e9e1;
+  --prompt-border: #e2d0c4;
+  --tool-bg: #f3edda;
+}
+:root[data-palette="solarized"][data-scheme="dark"] {
+  --bg: #002b36;
+  --bg-raised: #03303b;
+  --bg-card: #073642;
+  --bg-hover: #0c4250;
+  --border: #0f4451;
+  --card-hover-border: #1e5867;
+  --text: #eee8d5;
+  --text-dim: #93a1a1;
+  --accent: #268bd2;
+  --accent-soft: #268bd240;
+  --prompt-bg: #0b3445;
+  --prompt-border: #1f5266;
+  --tool-bg: #00252f;
+}
+
+/* Rosé Pine — muted pinks and purples (rosepinetheme.com) */
+:root[data-palette="rose-pine"]:not([data-scheme="dark"]) {
+  --bg: #f4ede8;
+  --bg-raised: #faf4ed;
+  --bg-card: #fffaf3;
+  --bg-hover: #f2e9e1;
+  --border: #e6dcd5;
+  --card-hover-border: #d6cbc6;
+  --text: #575279;
+  --text-dim: #797593;
+  --accent: #b4637a;
+  --accent-soft: #b4637a33;
+  --prompt-bg: #f2e9ef;
+  --prompt-border: #e0d0de;
+  --tool-bg: #f6efe8;
+}
+:root[data-palette="rose-pine"][data-scheme="dark"] {
+  --bg: #191724;
+  --bg-raised: #1f1d2e;
+  --bg-card: #26233a;
+  --bg-hover: #2d2a42;
+  --border: #2f2b45;
+  --card-hover-border: #403d52;
+  --text: #e0def4;
+  --text-dim: #908caa;
+  --accent: #ebbcba;
+  --accent-soft: #ebbcba33;
+  --accent-text: #191724;
+  --prompt-bg: #2a2440;
+  --prompt-border: #443c62;
+  --tool-bg: #1c1a28;
+  --purple: #c4a7e7;
+  --purple-soft: #c4a7e733;
+  --blue: #9ccfd8;
+  --blue-soft: #9ccfd833;
+  --red: #eb6f92;
+  --red-soft: #eb6f9233;
 }
 
 html, body { height: 100%; }
@@ -277,7 +444,7 @@ body {
 .btn:hover { background: var(--bg-hover); }
 .btn:active { transform: translateY(1px); }
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
 .btn.primary:hover { filter: brightness(1.06); }
 .btn.ghost { background: transparent; }
 .btn.danger { color: var(--red); border-color: var(--red-soft); }
@@ -1658,7 +1825,7 @@ a.chip.pr:hover { border-color: currentColor; }
 .field-hint { font-weight: normal; font-size: 11px; color: var(--text-dim); }
 .addon input { width: auto; margin-top: 2px; }
 
-/* ── ask sr. popo ── */
+/* ── ask ployd ── */
 .ask-answer {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
   padding: 11px 13px; font-size: 13px; line-height: 1.5; word-break: break-word;

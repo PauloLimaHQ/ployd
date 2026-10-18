@@ -1,4 +1,4 @@
-/* Sr. Popo — live. No build step: native ES module. */
+/* Ployd — live. No build step: native ES module. */
 import { $, state } from '../core/state.js';
 import { appendAskEvent, finishAsk } from './ask.js';
 import { renderAutonomous, renderPlugins } from './autonomous.js';

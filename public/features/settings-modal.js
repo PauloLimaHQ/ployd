@@ -1,4 +1,4 @@
-/* Sr. Popo — settings-modal. No build step: native ES module. */
+/* Ployd — settings-modal. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { renderPlugins } from './autonomous.js';
@@ -8,7 +8,7 @@ import { renderRemoteAccess } from './remote.js';
 import { resourceMonitorOn } from './resources.js';
 import { notificationsOn, updateNotifNote } from './settings.js';
 import { soundsOn } from './sounds.js';
-import { currentLayout, currentTheme } from './theme.js';
+import { currentLayout, currentPalette, currentTheme } from './theme.js';
 import { loadUsage, usageRepoOptionsHtml } from './usage.js';
 
 
@@ -56,6 +56,7 @@ function openSettingsModal(section) {
   $('#setting-resource-monitor').checked = resourceMonitorOn();
   renderSessionMemorySetting();
   $('#setting-theme').value = currentTheme();
+  $('#setting-palette').value = currentPalette();
   $('#setting-layout').value = currentLayout();
   renderEditorSetting();
   renderPlugins();
@@ -72,7 +73,7 @@ async function saveSettings(patch) {
 }
 
 // ---------- default IDE (Settings → General → External tools) ----------
-// The <select> lists every editor Sr. Popo knows how to launch; the ones it
+// The <select> lists every editor Ployd knows how to launch; the ones it
 // can't find on this machine stay selectable but are marked, so choosing one
 // (e.g. before installing its launcher) is possible without being a trap.
 function renderEditorSetting() {

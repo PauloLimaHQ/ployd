@@ -1,4 +1,4 @@
-/* Sr. Popo — board. No build step: native ES module. */
+/* Ployd — board. No build step: native ES module. */
 import { $, COLUMNS, COLUMN_OF_STATUS, GROOMING_COLUMN, ORCH_COLUMN, isGroomingLive, isLive, isOrchestrationLive, state } from '../core/state.js';
 import { renderCard, renderGroomingCard, renderOrchestrationCard } from './cards.js';
 import { onDrop } from './dnd.js';

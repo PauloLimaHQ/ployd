@@ -1,4 +1,4 @@
-/* Sr. Popo — cards. No build step: native ES module. */
+/* Ployd — cards. No build step: native ES module. */
 import { agentBadge, api, elapsedSince, esc, fmtDuration, modelClass, toast } from '../core/api.js';
 import { icon, isAutoApprove, isGroomingLive, isLive, isOrchestrationLive, pendingPermissions, state } from '../core/state.js';
 import { openContextMenu, openGroomingContextMenu, showContextMenu } from './context-menu.js';

@@ -1,4 +1,4 @@
-/* Sr. Popo — shortcuts. No build step: native ES module. */
+/* Ployd — shortcuts. No build step: native ES module. */
 import { esc } from '../core/api.js';
 import { $, MOD } from '../core/state.js';
 import { openPalette } from './palette.js';

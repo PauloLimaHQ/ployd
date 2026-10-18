@@ -3,7 +3,7 @@
  * status current without requiring a human to open that task's drawer first.
  * Today `GET /api/tasks/:id/pr` (server/github.ts) is only ever called lazily
  * from the client (drawer open, the manual refresh chip, or the move-to-done
- * check) — a PR merged or closed outside Sr. Popo stays looking "open" on the
+ * check) — a PR merged or closed outside Ployd stays looking "open" on the
  * board until someone happens to look. This runs unconditionally (unlike the
  * opt-in autoResolveConflicts sweep in conflicts.ts, which it otherwise
  * mirrors): staying honest about merge state isn't an opt-in behavior.

@@ -20,8 +20,8 @@
 import * as sentinels from './sentinels';
 import type { PrInfo, Task, TaskCodeReview } from './types';
 
-const REVIEW_START = '@@SRPOPO_REVIEW_START@@';
-const REVIEW_END = '@@SRPOPO_REVIEW_END@@';
+const REVIEW_START = '@@PLOYD_REVIEW_START@@';
+const REVIEW_END = '@@PLOYD_REVIEW_END@@';
 
 // The grade scale, in the exact wording used in the reviewer prompt, in the PR
 // comment, and in the board's own tooltips — one vocabulary everywhere.

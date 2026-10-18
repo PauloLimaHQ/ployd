@@ -1,4 +1,4 @@
-/* Sr. Popo — orchestrate. No build step: native ES module. */
+/* Ployd — orchestrate. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { renderBoard } from './board.js';

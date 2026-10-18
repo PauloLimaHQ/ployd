@@ -1,4 +1,4 @@
-/* Sr. Popo — frontend entry. No build step: native ES modules.
+/* Ployd — frontend entry. No build step: native ES modules.
  *
  * This file only wires the app together. Every feature lives in its own module
  * under features/ (shared state and the API client live under core/), so a
@@ -127,7 +127,7 @@ async function boot() {
     chip.classList.add(h.ok ? 'ok' : 'bad');
     const about = $('#setting-about-version');
     if (about && h.version) {
-      about.textContent = `Sr. Popo v${h.version} · Node ${h.node}` +
+      about.textContent = `Ployd v${h.version} · Node ${h.node}` +
         (agents.length ? ` · ${agents.join(' · ')}` : '');
     }
   } catch { /* server down; toast already shown */ }

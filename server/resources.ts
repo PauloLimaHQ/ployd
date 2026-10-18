@@ -1,5 +1,5 @@
 /**
- * Resource monitor — how much of this machine Sr. Popo and its agents are using.
+ * Resource monitor — how much of this machine Ployd and its agents are using.
  *
  * Opt-in (Settings > General > "Resource monitor", `Settings.resourceMonitor`):
  * sampling shells out to the OS process table, so nothing runs until the user
@@ -235,7 +235,7 @@ function rollUp(pids: number[], byPid: Map<number, ProcRow>, cores: number): Tre
 }
 
 // What a live agent child is working on, for the panel's session rows. The id is
-// a task, grooming or orchestration id; an "Ask Sr. Popo" session is ephemeral
+// a task, grooming or orchestration id; an "Ask Ployd" session is ephemeral
 // (never persisted), so it falls through to the generic label.
 function describe(id: string): { kind: SessionUsage['kind']; title: string; agent: string | null } {
   const task = db.tasks.find((t) => t.id === id);
@@ -244,7 +244,7 @@ function describe(id: string): { kind: SessionUsage['kind']; title: string; agen
   if (grooming) return { kind: 'grooming', title: grooming.title || 'Idea grooming', agent: null };
   const orchestration = db.orchestrations.find((o) => o.id === id);
   if (orchestration) return { kind: 'orchestration', title: orchestration.title || 'Goal orchestration', agent: null };
-  return { kind: 'ask', title: 'Ask Sr. Popo', agent: null };
+  return { kind: 'ask', title: 'Ask Ployd', agent: null };
 }
 
 // A live agent child as the runner reports it (see runner.liveChildren).

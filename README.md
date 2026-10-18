@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/hero.png" alt="Sr. Popo — your local coding-agent orchestrator" width="820">
+<img src="docs/hero.png" alt="Ployd — your local coding-agent orchestrator" width="820">
 
-# 🧞 Sr. Popo
+# 🧞 Ployd
 
 **Run many coding-agent sessions in parallel — from one calm Kanban board.**
 
@@ -25,8 +25,8 @@ Grab the latest installer from the **[Releases page →](https://github.com/Paul
 
 | Platform | File |
 |---|---|
-| **macOS** (Apple Silicon + Intel) | `Sr.Popo-*.dmg` |
-| **Windows** (x64) | `Sr.Popo-Setup-*.exe` |
+| **macOS** (Apple Silicon + Intel) | `Ployd-*.dmg` |
+| **Windows** (x64) | `Ployd-Setup-*.exe` |
 
 Builds are **unsigned** (ad-hoc signed only, no Apple Developer ID / notarization)
 for now, so your OS will warn on first launch:
@@ -37,7 +37,7 @@ for now, so your OS will warn on first launch:
 > **macOS says the app is "damaged and can't be opened"?** That's the download's
 > quarantine flag on an unsigned app, not a corrupt file. Clear it with:
 > ```bash
-> xattr -dr com.apple.quarantine "/Applications/Sr. Popo.app"
+> xattr -dr com.apple.quarantine "/Applications/Ployd.app"
 > ```
 > then open it normally. (Newer builds are ad-hoc signed, which avoids this.)
 
@@ -45,7 +45,7 @@ for now, so your OS will warn on first launch:
 
 ### Before you start
 
-You need at least one **agent CLI** installed and logged in — Sr. Popo drives it.
+You need at least one **agent CLI** installed and logged in — Ployd drives it.
 Check with:
 
 ```bash
@@ -59,7 +59,7 @@ Any one is enough; install several if you want to choose per task. On first laun
 
 ## What it is
 
-Sr. Popo is a **local orchestrator hub for coding agents**. Instead of babysitting one
+Ployd is a **local orchestrator hub for coding agents**. Instead of babysitting one
 terminal at a time, you line up prompts on a board, dispatch as many as you like, and
 review the results calmly — each one an independent, isolated agent session.
 
@@ -82,7 +82,7 @@ the background when the window is closed.
 - **Your subscription, not an API key** — `ANTHROPIC_API_KEY` (Claude),
   `OPENAI_API_KEY` (Codex) and `XAI_API_KEY` (Grok) are stripped from every spawned
   task, so runs always use your subscription login.
-- **Isolated worktrees** — optionally run each task on its own `srpopo/<slug>` branch in
+- **Isolated worktrees** — optionally run each task on its own `ployd/<slug>` branch in
   a dedicated git worktree, so parallel work never collides.
 - **Per-workspace settings** — give a repository its own branch-naming convention
   (`feat/{slug}-{id}`, with `{date}` too) and the defaults new tasks and ideas there
@@ -100,7 +100,7 @@ the background when the window is closed.
 - **Follow-ups** — finished tasks keep their session; type in the composer to resume
   with full context.
 - **GitHub PRs in the drawer** — surfaces a task's pull request when there is one.
-- **MCP server** — while Sr. Popo runs it exposes its board over MCP (Streamable HTTP
+- **MCP server** — while Ployd runs it exposes its board over MCP (Streamable HTTP
   at `/mcp`), so another agent session can list, queue, dispatch, and stop tasks.
 - **Light & dark theming**, native OS notifications, and an inline SVG icon set (no
   icon font, no network fetch).
@@ -116,8 +116,8 @@ the background when the window is closed.
    - **Permissions** — `acceptEdits` (recommended), bypass-all, or plan-only. Only
      Claude asks per tool: on Codex these map to a sandbox level, and on Grok to its
      own permission mode (where "ask by default" denies rather than asking).
-   - **Worktree** — run isolated on branch `srpopo/<task>`
-3. **Dispatch** — drag the card into **Running** (or hit *Create & Run*). Sr. Popo
+   - **Worktree** — run isolated on branch `ployd/<task>`
+3. **Dispatch** — drag the card into **Running** (or hit *Create & Run*). Ployd
    spawns the agent's CLI (`claude -p --output-format stream-json`,
    `codex exec --json`, or `grok --output-format streaming-json`) in the repo/worktree
    and streams everything live.
@@ -130,17 +130,17 @@ the background when the window is closed.
    and final cost/turns.
 6. **Follow-up** — resume a finished task from the composer, or drag it back to Running.
 7. **Done** — when you're happy, drag to Done, then *Remove worktree* / *Archive*. Merge
-   the `srpopo/*` branch however you normally would.
+   the `ployd/*` branch however you normally would.
 
 ## Drive it from another agent (MCP)
 
-While Sr. Popo is running it doubles as an **MCP server**, so a separate agent session
+While Ployd is running it doubles as an **MCP server**, so a separate agent session
 (or any MCP client) can drive the board — list repos, queue a task, dispatch it, and
 stop a run — through the same code paths the UI uses. It speaks MCP's Streamable HTTP
 transport at `/mcp`:
 
 ```bash
-claude mcp add --transport http srpopo http://127.0.0.1:7777/mcp
+claude mcp add --transport http ployd http://127.0.0.1:7777/mcp
 ```
 
 Tools: `list_repos`, `list_tasks`, `get_task`, `create_task`, `dispatch_task`,
@@ -198,8 +198,8 @@ is exactly what the [Download](#download) links above point to).
 
 ## Where data lives
 
-- **macOS** — `~/Library/Application Support/Sr. Popo/data` (`db.json` + `logs/`)
-- Per-task worktrees — `~/.srpopo/worktrees/`
+- **macOS** — `~/Library/Application Support/Ployd/data` (`db.json` + `logs/`)
+- Per-task worktrees — `~/.ployd/worktrees/`
 
 Nothing leaves your machine. There are no user accounts; instead the server binds
 `127.0.0.1` and only answers requests whose `Host` header is one it actually serves
@@ -229,7 +229,7 @@ Code and contributors follow when working in this repo.
 
 ## Contributing
 
-Sr. Popo is open source and built to maintain itself — queue tasks against this very
+Ployd is open source and built to maintain itself — queue tasks against this very
 repo and let an agent do the work.
 
 - [`CONTRIBUTING.md`](./CONTRIBUTING.md) — dev setup, workflow, commit/PR style

@@ -6,7 +6,7 @@ import fs from 'fs';
 
 // Each test file under `node --test` runs in its own process, so — like
 // smoke.test.ts — set this before any server module is required.
-process.env.SRPOPO_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-ask-test-'));
+process.env.PLOYD_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-ask-test-'));
 
 test('ask: askPrompt carries the question, and the repo memory only when given', () => {
   const ask = require('../server/ask');

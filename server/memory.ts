@@ -1,7 +1,7 @@
 /*
  * Project memory — a private, per-repo markdown document of durable learnings
- * (conventions, architecture, decisions, gotchas) that Sr. Popo builds up over
- * time. It lives only in Sr. Popo's own data dir (never inside the user's
+ * (conventions, architecture, decisions, gotchas) that Ployd builds up over
+ * time. It lives only in Ployd's own data dir (never inside the user's
  * repository), is distilled in the background after each task that finishes
  * successfully (see runner.distillMemory), is viewable/editable by the user
  * (GET/PUT /api/repos/:id/memory), and is injected into grooming sessions so
@@ -25,8 +25,8 @@ const MAX_BYTES = 64 * 1024;
 // than a setting) so it's easy to revisit later without a migration.
 const MEMORY_MODEL = 'haiku';
 
-const MEMORY_START = '@@SRPOPO_MEMORY_START@@';
-const MEMORY_END = '@@SRPOPO_MEMORY_END@@';
+const MEMORY_START = '@@PLOYD_MEMORY_START@@';
+const MEMORY_END = '@@PLOYD_MEMORY_END@@';
 const NO_CHANGES = 'NO_CHANGES';
 
 function memoryPath(repoId: string): string {

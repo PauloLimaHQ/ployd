@@ -1,6 +1,6 @@
 # Security Policy
 
-Sr. Popo runs entirely on your own machine, spawns a local agent CLI (`claude`,
+Ployd runs entirely on your own machine, spawns a local agent CLI (`claude`,
 `codex` or `grok`), and can create git worktrees and (via add-ons) push branches and open pull
 requests. Because it drives real tooling with your credentials, its security properties
 matter.
@@ -13,8 +13,8 @@ matter.
   environment — `ANTHROPIC_API_KEY` for Claude Code, `OPENAI_API_KEY` for Codex,
   `XAI_API_KEY` for Grok — so runs always use your interactive subscription login.
 - **Local data only.** Repos, tasks, and full session logs live under your per-user data
-  directory (`~/Library/Application Support/Sr. Popo/data` on macOS). Nothing is sent
-  off your machine by Sr. Popo itself.
+  directory (`~/Library/Application Support/Ployd/data` on macOS). Nothing is sent
+  off your machine by Ployd itself.
 - **Sandboxed UI.** The Electron renderer runs with `contextIsolation` on and
   `nodeIntegration` off; it talks to the server over local HTTP through a minimal
   preload bridge.
@@ -27,7 +27,7 @@ prompts and permission modes you use with the same care as running `claude` / `c
 
 ## Supported versions
 
-Sr. Popo is pre-1.0; only the latest release on `main` is supported.
+Ployd is pre-1.0; only the latest release on `main` is supported.
 
 ## Reporting a vulnerability
 

@@ -1,4 +1,4 @@
-/* Sr. Popo — followup. No build step: native ES module. */
+/* Ployd — followup. No build step: native ES module. */
 import { api, toast } from '../core/api.js';
 import { $, state } from '../core/state.js';
 

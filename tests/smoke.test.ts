@@ -7,7 +7,7 @@ import fs from 'fs';
 // Keep the store's on-disk writes out of the repo during tests. Set BEFORE any
 // server module is required (the requires below are deliberately lazy so the
 // store reads this env var, not the repo default).
-process.env.SRPOPO_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-test-'));
+process.env.PLOYD_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-test-'));
 
 test('store exposes id/now helpers', () => {
   const store = require('../server/store');
@@ -255,13 +255,13 @@ test('index: authorizeRemote gates LAN requests by token (off → open, on → t
     // subsequent EventSource requests (which can't send headers) authenticate.
     d = index._authorizeRemote({ local: false, cookieToken: '', headerToken: TOKEN, queryToken: '' });
     assert.strictEqual(d.allow, true, 'a valid bearer token is allowed');
-    assert.ok(d.setCookie && d.setCookie.includes('srpopo_token=') && /HttpOnly/i.test(d.setCookie)
+    assert.ok(d.setCookie && d.setCookie.includes('ployd_token=') && /HttpOnly/i.test(d.setCookie)
       && /SameSite=Lax/i.test(d.setCookie), 'header token persists an HttpOnly SameSite=Lax cookie');
 
     // On + LAN + valid ?token= query → allowed, and the cookie is set.
     d = index._authorizeRemote({ local: false, cookieToken: '', headerToken: '', queryToken: TOKEN });
     assert.strictEqual(d.allow, true, 'a valid query token is allowed');
-    assert.ok(d.setCookie && d.setCookie.includes('srpopo_token='), 'query token persists the cookie');
+    assert.ok(d.setCookie && d.setCookie.includes('ployd_token='), 'query token persists the cookie');
   } finally {
     store.db.settings.remoteAccess = prevOn;
     store.db.settings.remoteAccessToken = prevTok;
@@ -270,7 +270,7 @@ test('index: authorizeRemote gates LAN requests by token (off → open, on → t
 
 test('index: parseCookies parses a Cookie header by hand; lanAddresses lists IPv4 strings', () => {
   const index = require('../server/index');
-  assert.deepStrictEqual(index._parseCookies('a=1; srpopo_token=xyz; b=2').srpopo_token, 'xyz');
+  assert.deepStrictEqual(index._parseCookies('a=1; ployd_token=xyz; b=2').ployd_token, 'xyz');
   assert.deepStrictEqual(index._parseCookies(undefined), {}, 'no header yields an empty map');
   assert.deepStrictEqual(index._parseCookies('novalue').novalue, undefined, 'a valueless part is skipped');
   const lan = index._lanAddresses();
@@ -358,7 +358,7 @@ test('index: strippedTokenUrl keeps the access token out of history and Referer'
 test('git: listBranches/createBranch/checkoutBranch and worktree base off a chosen branch', async () => {
   const git = require('../server/git');
   const { execFileSync } = require('child_process');
-  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-git-'));
+  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-git-'));
   const g = (...args: string[]) => execFileSync('git', ['-C', repo, ...args]).toString().trim();
   g('init', '-q');
   g('config', 'user.email', 't@t.co');
@@ -379,7 +379,7 @@ test('git: listBranches/createBranch/checkoutBranch and worktree base off a chos
 
   // A worktree with a baseBranch is cut from that branch, not the current HEAD.
   const wt = await git.addWorktree(repo, 'tid', 'slug', null, 'feature/x');
-  assert.strictEqual(wt.branch, 'srpopo/slug-tid');
+  assert.strictEqual(wt.branch, 'ployd/slug-tid');
   const base = execFileSync('git', ['-C', wt.wtPath, 'merge-base', 'HEAD', 'feature/x']).toString().trim();
   assert.strictEqual(base, g('rev-parse', 'feature/x'), 'worktree is based on feature/x');
   await git.removeWorktree(repo, wt.wtPath);
@@ -397,7 +397,7 @@ test('git: listBranches/createBranch/checkoutBranch and worktree base off a chos
 test('git: removeWorktree survives a partial delete and is idempotent', async () => {
   const git = require('../server/git');
   const { execFileSync } = require('child_process');
-  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-wt-rm-'));
+  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-wt-rm-'));
   const g = (...args: string[]) => execFileSync('git', ['-C', repo, ...args]).toString().trim();
   g('init', '-q');
   g('config', 'user.email', 't@t.co');
@@ -604,7 +604,7 @@ test('pr-refresh: sweep broadcasts a pr event once per change, keyed off a nonex
   // A cwd that can't exist makes the `gh` spawn fail immediately with ENOENT
   // regardless of whether this machine has `gh` installed/authenticated —
   // deterministic and fast, same trick as the module's own no-branch tests.
-  const task = mkTask('pr-1', 'validation', 'repoA', { branch: 'feature/x', repoPath: '/tmp/srpopo-test-does-not-exist' });
+  const task = mkTask('pr-1', 'validation', 'repoA', { branch: 'feature/x', repoPath: '/tmp/ployd-test-does-not-exist' });
   const restore = withStore([task], 10);
   const seen: Array<{ type?: string; taskId?: string; result?: unknown }> = [];
   const unsubscribe = bus.subscribe((msg: { type?: string; taskId?: string; result?: unknown }) => seen.push(msg));
@@ -719,7 +719,7 @@ const specFile = (number: string, title: string) =>
 
 test('repoSpecs: discoverSpecs lists spec-root .md files with full frontmatter, and nothing else', () => {
   const repoSpecs = require('../server/repoSpecs');
-  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-specs-'));
+  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-specs-'));
 
   fs.mkdirSync(path.join(repoPath, 'specs'), { recursive: true });
   fs.writeFileSync(path.join(repoPath, 'specs', '0001-add-dark-mode.md'), specFile('0001', 'Add Dark Mode'));
@@ -749,13 +749,13 @@ test('repoSpecs: discoverSpecs lists spec-root .md files with full frontmatter, 
   );
 
   // An absent specs dir (repo with neither root) yields [].
-  const bare = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-specs-bare-'));
+  const bare = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-specs-bare-'));
   assert.deepStrictEqual(repoSpecs.discoverSpecs(bare), [], 'no specs/ or .specs/ dir yields no results');
 });
 
 test('repoSpecs: readSpec rejects path traversal and missing files', () => {
   const repoSpecs = require('../server/repoSpecs');
-  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-specs-read-'));
+  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-specs-read-'));
   fs.mkdirSync(path.join(repoPath, 'specs'), { recursive: true });
   fs.writeFileSync(path.join(repoPath, 'specs', 'idea.md'), '# Idea\n\nDo the thing.');
 
@@ -806,7 +806,7 @@ test('repoSpecs: inlinePrompt carries the text for a spec the run cannot open', 
 test('git: isTracked distinguishes committed specs from git-ignored ones', async () => {
   const git = require('../server/git');
   const { execFileSync } = require('child_process');
-  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-tracked-'));
+  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-tracked-'));
   const run = (...args: string[]) => execFileSync('git', ['-C', repoPath, ...args], { stdio: 'pipe' });
   run('init', '-q');
   run('config', 'user.email', 'test@example.com');
@@ -842,7 +842,7 @@ test('repoSpecs: parseFrontmatter reads key/value pairs and never throws', () =>
 
 test('repoSpecs: discoverSpecs reads frontmatter, prefers title, and sorts by number', () => {
   const repoSpecs = require('../server/repoSpecs');
-  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-specs-fm-'));
+  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-specs-fm-'));
   fs.mkdirSync(path.join(repoPath, 'specs'), { recursive: true });
 
   fs.writeFileSync(path.join(repoPath, 'specs', '0084-add-auth.md'),
@@ -863,7 +863,7 @@ test('repoSpecs: discoverSpecs reads frontmatter, prefers title, and sorts by nu
 
 test('repoSpecs: readSpecConfig reads specs/.spec-config.json, else {}', () => {
   const repoSpecs = require('../server/repoSpecs');
-  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-specs-cfg-'));
+  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-specs-cfg-'));
   fs.mkdirSync(path.join(repoPath, 'specs'), { recursive: true });
   fs.writeFileSync(path.join(repoPath, 'specs', '.spec-config.json'),
     JSON.stringify({ indexCommand: 'node specs/generate-index.mjs', actionableStatuses: ['draft', 'wip'] }));
@@ -873,7 +873,7 @@ test('repoSpecs: readSpecConfig reads specs/.spec-config.json, else {}', () => {
   assert.deepStrictEqual(config.actionableStatuses, ['draft', 'wip']);
   assert.strictEqual(repoSpecs.indexCommandTool(config), 'Bash(node:*)', 'tool derives from the command binary');
 
-  const bare = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-specs-cfg-bare-'));
+  const bare = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-specs-cfg-bare-'));
   assert.deepStrictEqual(repoSpecs.readSpecConfig(bare), {}, 'no config file yields {}');
   assert.strictEqual(repoSpecs.indexCommandTool({}), null, 'no command yields no tool');
 });
@@ -882,7 +882,7 @@ test('framing: framePrompt appends a spec-completion block only for spec imports
   const framing = require('../server/framing');
 
   // Plain-markdown repo: generic "update the spec file" directive, no index step.
-  const plainRepo = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-frame-plain-'));
+  const plainRepo = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-frame-plain-'));
   fs.mkdirSync(path.join(plainRepo, 'specs'), { recursive: true });
   fs.writeFileSync(path.join(plainRepo, 'specs', 'idea.md'), '# Idea\n\nDo it.');
   const plainTask = { id: 'a', prompt: 'Body', personas: [], addons: [], attachments: [],
@@ -894,7 +894,7 @@ test('framing: framePrompt appends a spec-completion block only for spec imports
   assert.ok(!plainFramed.includes('regenerate the spec index'), 'no index step without config');
 
   // Frontmatter-driven repo with a declared index command: full block.
-  const fwRepo = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-frame-fw-'));
+  const fwRepo = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-frame-fw-'));
   fs.mkdirSync(path.join(fwRepo, 'specs'), { recursive: true });
   fs.writeFileSync(path.join(fwRepo, 'specs', '0084-auth.md'), '---\nnumber: "0084"\nstatus: draft\n---\n# Auth\n');
   fs.writeFileSync(path.join(fwRepo, 'specs', '.spec-config.json'),
@@ -985,12 +985,12 @@ test('runner: promptPermissions wires the approval MCP bridge (and skips it on b
   const on = runner.buildArgs({ id: 'abc123', permissionMode: 'acceptEdits', promptPermissions: true }, false);
   const ti = on.indexOf('--permission-prompt-tool');
   assert.ok(ti !== -1, '--permission-prompt-tool is present when opted in');
-  assert.strictEqual(on[ti + 1], runner.PERMISSION_TOOL, 'points at the srpopo approve tool');
+  assert.strictEqual(on[ti + 1], runner.PERMISSION_TOOL, 'points at the ployd approve tool');
   const ci = on.indexOf('--mcp-config');
   assert.ok(ci !== -1, '--mcp-config registers the bridge');
   const cfg = JSON.parse(on[ci + 1]);
-  assert.ok(cfg.mcpServers && cfg.mcpServers.srpopo, 'config declares the srpopo server');
-  assert.match(cfg.mcpServers.srpopo.env.SRPOPO_APPROVAL_URL, /\/api\/tasks\/abc123\/permission$/, 'bridge points back at this task');
+  assert.ok(cfg.mcpServers && cfg.mcpServers.ployd, 'config declares the ployd server');
+  assert.match(cfg.mcpServers.ployd.env.PLOYD_APPROVAL_URL, /\/api\/tasks\/abc123\/permission$/, 'bridge points back at this task');
 
   // Opting in is a no-op under bypassPermissions — there is nothing to prompt for.
   const bypass = runner.buildArgs({ id: 'abc123', permissionMode: 'bypassPermissions', promptPermissions: true }, false);
@@ -1186,7 +1186,7 @@ test('mcp: respond builds MCP replies, lists the board tools, and routes tools/c
   const init = await mcp.respond({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18' } });
   assert.strictEqual(init.result.protocolVersion, '2025-06-18', 'echoes the client protocol version');
   assert.ok(init.result.capabilities.tools, 'advertises tool capability');
-  assert.strictEqual(init.result.serverInfo.name, 'srpopo', 'identifies as srpopo');
+  assert.strictEqual(init.result.serverInfo.name, 'ployd', 'identifies as ployd');
 
   const list = await mcp.respond({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
   const names = list.result.tools.map((t: { name: string }) => t.name);
@@ -2036,7 +2036,7 @@ test('runner: maybeCodeReview only looks for a PR when the task opted in', () =>
   const runner = require('../server/runner');
   // A cwd that can't exist makes the `gh` lookup fail immediately (same trick the
   // pr-refresh cases use), so the opted-in path is deterministic and spawns nothing.
-  const extra = { branch: 'srpopo/x', repoPath: '/tmp/srpopo-test-does-not-exist' };
+  const extra = { branch: 'ployd/x', repoPath: '/tmp/ployd-test-does-not-exist' };
   const off = mkTask('mcr-off', 'validation', 'repoA', extra);
   const on = mkTask('mcr-on', 'validation', 'repoA', { ...extra, autoCodeReview: true });
   const restore = withStore([off, on], 10);
@@ -2097,7 +2097,7 @@ test('reviewer: parseVerdict recovers the sentinel payload, falls back to a fenc
   assert.strictEqual(reviewer.parseVerdict(undefined), null, 'and a missing one, without throwing');
 
   // The rubric wording is in the prompt verbatim, so the scale is used consistently.
-  const prompt = reviewer.metaPrompt(mkTask('pr-task', 'validation', 'repoA', { branch: 'srpopo/x' }), { number: 7, title: 'Add it' });
+  const prompt = reviewer.metaPrompt(mkTask('pr-task', 'validation', 'repoA', { branch: 'ployd/x' }), { number: 7, title: 'Add it' });
   for (const g of [1, 2, 3, 4, 5]) {
     assert.ok(prompt.includes(`${g} = ${reviewer.GRADE_MEANINGS[g]}`), `the prompt states grade ${g}'s meaning`);
   }
@@ -2458,7 +2458,7 @@ test('agents/grok: buildArgs streams NDJSON, maps every permission mode, and res
   // arrives via promptArgs (see below), not as an argument built here.
   assert.ok(!fresh.includes('-p') && !fresh.includes('--prompt-file'), 'buildArgs carries no prompt');
 
-  // Sr. Popo's 'default' means "ask", and a headless run has nobody to ask — it
+  // Ployd's 'default' means "ask", and a headless run has nobody to ask — it
   // maps onto dontAsk, which DENIES rather than prompting (what `claude -p` does).
   const ask = grok.buildArgs({ permissionMode: 'default' }, false);
   assert.ok(ask.includes('dontAsk') && !ask.includes('default'), "'default' becomes dontAsk, never a hanging prompt");
@@ -2769,17 +2769,17 @@ test('memory: parseDistillResult recovers an update, else null for NO_CHANGES/ga
   assert.strictEqual(memory.parseDistillResult(undefined), null);
 });
 
-test('groomer: metaPrompt only appends the "what Sr. Popo remembers" section when memory is non-empty', () => {
+test('groomer: metaPrompt only appends the "what Ployd remembers" section when memory is non-empty', () => {
   const groomer = require('../server/groomer');
 
   const withoutMemory = groomer.metaPrompt('add a dark mode toggle');
-  assert.ok(!withoutMemory.includes('What Sr. Popo remembers'), 'no memory section when memory is omitted');
+  assert.ok(!withoutMemory.includes('What Ployd remembers'), 'no memory section when memory is omitted');
 
   const withoutMemoryBlank = groomer.metaPrompt('add a dark mode toggle', '   ');
   assert.strictEqual(withoutMemoryBlank, withoutMemory, 'a blank memory string leaves the prompt byte-identical');
 
   const withMemory = groomer.metaPrompt('add a dark mode toggle', '## Conventions\nUse 2-space indent.');
-  assert.match(withMemory, /What Sr\. Popo remembers about this project/);
+  assert.match(withMemory, /What Ployd remembers about this project/);
   assert.match(withMemory, /Use 2-space indent\./);
 });
 
@@ -2888,12 +2888,17 @@ test('orchestrator: parseStatus recovers all four turn states, and rejects anyth
   const twice = `${orchestrator.ORCH_START}{"state":"waiting","watch":["old"]}${orchestrator.ORCH_END}` +
     `later…${orchestrator.ORCH_START}{"state":"done","summary":"fin"}${orchestrator.ORCH_END}`;
   assert.strictEqual(orchestrator.parseStatus(twice).state, 'done', 'the last span is the answer');
+
+  // A session started before the rename to Ployd keeps the old markers when it's
+  // resumed; the prose braces around them must not win over that payload.
+  const legacy = 'see {this} → @@SRPOPO_ORCH_START@@{"state":"waiting","watch":["w9"]}@@SRPOPO_ORCH_END@@ {and that}';
+  assert.deepStrictEqual(orchestrator.parseStatus(legacy).watch, ['w9'], 'legacy @@SRPOPO_*@@ markers still parse');
 });
 
 test('orchestrator: statusPrompt digests every watched worker and flags ones that vanished', () => {
   const orchestrator = require('../server/orchestrator');
   const tasks = [
-    mkTask('w1', 'validation', 'repoA', { title: 'Add the parser', lastOutcome: 'success', branch: 'srpopo/parser', runCount: 1 }),
+    mkTask('w1', 'validation', 'repoA', { title: 'Add the parser', lastOutcome: 'success', branch: 'ployd/parser', runCount: 1 }),
     mkTask('w2', 'failed', 'repoA', { title: 'Wire the UI', lastOutcome: 'error', lastError: 'tsc: type error in app.ts' }),
   ];
   const prompt = orchestrator.statusPrompt({ watch: ['w1', 'w2', 'gone'], mode: 'manual' }, tasks);
@@ -3612,7 +3617,7 @@ test('plugins: the catalog offers Node Scripts and sanitize keeps it', () => {
 
 test('scripts: read() lists a checkout\'s scripts and picks the package manager + primary', () => {
   const scripts = require('../server/scripts');
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-scripts-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-scripts-'));
 
   // No package.json at all — the Run button's "hide yourself" answer, not an error.
   assert.deepStrictEqual(scripts.read(dir), { manager: null, scripts: [], primary: null });
@@ -3671,7 +3676,7 @@ test('index: the package-script routes are plugin-gated and validate repo, path 
   const post = (p: string, body: unknown) => fetch(`${base}${p}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-scripts-repo-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-scripts-repo-'));
   fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ scripts: { dev: 'vite' } }));
   const repo = { id: store.id(), path: dir, name: 's/scripts', branch: null, addedAt: store.now() };
   store.db.repos.push(repo);
@@ -3705,7 +3710,7 @@ test('index: the package-script routes are plugin-gated and validate repo, path 
 
 test('terminal: a command session types its command at the prompt and keeps a plain shell', () => {
   const terminal = require('../server/terminal');
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srpopo-term-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ployd-term-'));
   try {
     const s = terminal.create({ cwd: dir, repoId: 'r1', command: 'npm run dev' });
     assert.strictEqual(s.kind, 'shell', 'it is a plain shell, so stopping the script leaves the tab alive');

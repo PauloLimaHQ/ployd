@@ -1,4 +1,4 @@
-/* Sr. Popo — work-area tabs. No build step: native ES module. */
+/* Ployd — work-area tabs. No build step: native ES module. */
 import { esc, toast } from '../core/api.js';
 import { $, IS_MAC, icon, isGroomingLive, isLive, isOrchestrationLive, state } from '../core/state.js';
 import { groomingsForRepo, orchestrationsForRepo, tasksForRepo } from './filters.js';
@@ -68,7 +68,7 @@ const showTerminalPane = () => { if (tabsOn()) setPanes('session'); };
 // ---- the open set ----
 // Kept in localStorage next to the theme and layout: which tabs you had open is
 // a device-local habit, not board state, and it must never reach db.json.
-const TABS_KEY = 'srpopo.tabs';
+const TABS_KEY = 'ployd.tabs';
 
 function saveTabs() {
   try {

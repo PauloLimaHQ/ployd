@@ -1,11 +1,11 @@
-# Contributing to Sr. Popo
+# Contributing to Ployd
 
-Thanks for helping improve Sr. Popo! This is a small, local-first tool — contributions
+Thanks for helping improve Ployd! This is a small, local-first tool — contributions
 that keep it **simple, dependency-light, and obviously safe** are the most welcome.
 
 ## Ground rules
 
-- Sr. Popo runs entirely on the user's machine and drives their agent **subscription**
+- Ployd runs entirely on the user's machine and drives their agent **subscription**
   login (Claude Code / OpenAI Codex / xAI Grok) — never an API key. Don't add anything
   that phones home or ships task content off-device.
 - The server binds to `127.0.0.1` only. There is no auth layer; that binding is the
@@ -36,7 +36,7 @@ npm start        # the Electron desktop app
 
 ## Development workflow
 
-1. Branch off `main` (`feat/…`, `fix/…`, or the `srpopo/…` branch Sr. Popo creates when
+1. Branch off `main` (`feat/…`, `fix/…`, or the `ployd/…` branch Ployd creates when
    you run a task in a worktree).
 2. Make the smallest change that solves the problem. Match the surrounding style.
 3. Gate every change on:
@@ -46,7 +46,7 @@ npm start        # the Electron desktop app
 4. Open a pull request against `main` and fill in the template. CI runs typecheck + lint
    + test and packages the app on macOS and Windows.
 
-You can also dogfood the tool: register this repo in Sr. Popo and dispatch the change as
+You can also dogfood the tool: register this repo in Ployd and dispatch the change as
 a task (worktree + self-review add-on). See the "Maintaining this repo with Claude"
 section of [`CLAUDE.md`](./CLAUDE.md).
 

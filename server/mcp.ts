@@ -1,12 +1,12 @@
 /*
- * Sr. Popo board MCP server — exposes the Kanban board to any MCP client while
- * Sr. Popo is running. Unlike the per-task permission bridge (permission-mcp.js,
+ * Ployd board MCP server — exposes the Kanban board to any MCP client while
+ * Ployd is running. Unlike the per-task permission bridge (permission-mcp.js,
  * a stdio process the CLI spawns), this one is mounted straight onto the running
  * Express app at `POST /mcp` using MCP's Streamable HTTP transport, so an outside
  * agent session (or any MCP client) can list, create, dispatch, and stop
  * tasks over localhost:
  *
- *   claude mcp add --transport http srpopo http://127.0.0.1:7777/mcp
+ *   claude mcp add --transport http ployd http://127.0.0.1:7777/mcp
  *
  * It reaches the same store/runner code paths as the REST API (via server/tasks.ts),
  * so a task queued over MCP is identical to one queued from the board. There is no
@@ -17,7 +17,7 @@
  * re-implementing it. See invariant #1 in CLAUDE.md.
  *
  * The transport is deliberately hand-rolled (newline-free JSON-RPC 2.0 over a
- * single POST) to keep Sr. Popo dependency-light. `respond(msg, call)` builds one
+ * single POST) to keep Ployd dependency-light. `respond(msg, call)` builds one
  * JSON-RPC reply (or null for a notification) and takes an injectable tool caller
  * so the protocol layer is unit-testable without touching the store.
  */
@@ -33,9 +33,9 @@ import type { Repo, Task } from './types';
 // The latest transport spec we implement; we echo the client's requested version
 // on initialize when it sends one (forward-compatible), like permission-mcp.js.
 const PROTOCOL_VERSION = '2024-11-05';
-const SERVER_INFO = { name: 'srpopo', version: '1.0.0' };
+const SERVER_INFO = { name: 'ployd', version: '1.0.0' };
 const INSTRUCTIONS =
-  'Sr. Popo orchestrates coding-agent tasks on a local Kanban board. Use list_repos ' +
+  'Ployd orchestrates coding-agent tasks on a local Kanban board. Use list_repos ' +
   'to find a registered repo id, then list_tasks/get_task to inspect work, ' +
   'create_task to queue a prompt, and dispatch_task to run it. Each task runs on its ' +
   'own agent backend (claude, codex or grok). Dispatching spawns a real agent session on ' +
@@ -45,7 +45,7 @@ const INSTRUCTIONS =
 const TOOL_DEFS = [
   {
     name: 'list_repos',
-    description: 'List the git repositories registered in Sr. Popo (id, name, path, branch).',
+    description: 'List the git repositories registered in Ployd (id, name, path, branch).',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
   },
   {
@@ -85,7 +85,7 @@ const TOOL_DEFS = [
       'Queue a new task. Created in backlog by default; pass status "ready" to stage ' +
       'it for dispatch. Does not run it — call dispatch_task for that. Any field you ' +
       'omit falls back to the target workspace\'s configured defaults (and then to ' +
-      'Sr. Popo\'s own), so pass only what this task actually needs to differ on.',
+      'Ployd\'s own), so pass only what this task actually needs to differ on.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -94,7 +94,7 @@ const TOOL_DEFS = [
         prompt: { type: 'string', description: 'The prompt the agent will run.' },
         agent: { type: 'string', description: 'Which backend runs the task: "claude" (default), "codex" or "grok".' },
         model: { type: 'string', description: 'A model for the chosen agent, or "default" for its account default. Claude: sonnet / opus / haiku / fable, or a custom model id configured in Settings. Codex: e.g. gpt-5.6-sol. Grok: grok-build / grok-4.5.' },
-        useWorktree: { type: 'boolean', description: 'Run isolated on a srpopo/<slug> worktree branch.' },
+        useWorktree: { type: 'boolean', description: 'Run isolated on a ployd/<slug> worktree branch.' },
         permissionMode: { type: 'string', description: 'acceptEdits (default), bypassPermissions, plan, or default. On codex these map to a sandbox level rather than per-tool prompts; on grok they map to its own permission modes (again with no per-tool prompt).' },
         status: { type: 'string', description: '"ready" to stage for dispatch, otherwise backlog.' },
         branchName: { type: 'string', description: 'Override the auto-generated worktree branch name.' },

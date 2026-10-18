@@ -1,4 +1,4 @@
-/* Sr. Popo — context-menu. No build step: native ES module. */
+/* Ployd — context-menu. No build step: native ES module. */
 import { agentBadge, api, esc, fmtTokens, hasPermissionBridge, mdInline, mdToHtml, modelClass, toast, tokensOnly, totalTokens } from '../core/api.js';
 import { $, icon, isGroomingLive, isLive, isOrchestrationLive, state } from '../core/state.js';
 import { GRADE_MEANINGS, GROOMING_TARGET_LABEL, orchestrationTaskLinksHtml } from './cards.js';
@@ -408,7 +408,7 @@ function renderOrchestrationDrawerHead(o) {
       ? 'Waiting on its worker tasks — it resumes itself when they land'
       : isAwaiting
         ? 'Answer the question above to continue'
-        : 'Orchestrator sessions are resumed by Sr. Popo, not by hand';
+        : 'Orchestrator sessions are resumed by Ployd, not by hand';
 }
 
 // Load-time wiring. Called from app.js in the original source order.

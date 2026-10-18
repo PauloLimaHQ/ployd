@@ -1,4 +1,4 @@
-/* Sr. Popo — memory. No build step: native ES module. */
+/* Ployd — memory. No build step: native ES module. */
 import { api, toast } from '../core/api.js';
 import { $, state } from '../core/state.js';
 import { closeWorkspaceMenu } from './workspace-menu.js';

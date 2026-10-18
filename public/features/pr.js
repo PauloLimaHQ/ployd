@@ -1,4 +1,4 @@
-/* Sr. Popo — pr. No build step: native ES module. */
+/* Ployd — pr. No build step: native ES module. */
 import { api, esc, fmtDuration, mdToHtml } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { renderBoard } from './board.js';

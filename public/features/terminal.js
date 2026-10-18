@@ -1,4 +1,4 @@
-/* Sr. Popo — terminal. No build step: native ES module. */
+/* Ployd — terminal. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { activePane, activateTab, activeTabKey, applyPanes, cycleTab, noteSessionTab, pruneTabs, renderTabStrip, showTerminalPane, tabHotkey, tabsOn } from './tabs.js';
@@ -476,7 +476,7 @@ function hotkey(e) {
 }
 
 // ---- terminal panel resize (drag handle, height persisted across sessions) ----
-const TERM_HEIGHT_KEY = 'srpopo.terminalHeight';
+const TERM_HEIGHT_KEY = 'ployd.terminalHeight';
 const TERM_MIN_HEIGHT = 240;
 
 function applyTerminalHeight(px) {

@@ -1,5 +1,5 @@
 /*
- * "Ask Sr. Popo" — free-form Q&A about a registered repo, answered by a short,
+ * "Ask Ployd" — free-form Q&A about a registered repo, answered by a short,
  * read-only Claude session run inside it (see runner.ask). This file owns the
  * two small pieces that make that answer useful:
  *   - `readMemory(repoId)` — the repo's accumulated project memory (see
@@ -30,7 +30,7 @@ function askPrompt(question: string, memory: string | null): string {
     '',
     ...(memory
       ? [
-          "Sr. Popo's accumulated memory of this project — treat it as context, and verify it against",
+          "Ployd's accumulated memory of this project — treat it as context, and verify it against",
           'the code when it matters, since it may be stale:',
           '"""',
           memory,

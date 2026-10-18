@@ -2,7 +2,7 @@
  * Package scripts — the repo's own `package.json` scripts, offered as a Run
  * button next to the board.
  *
- * Sr. Popo is an ops surface for a checkout, not just a task queue: half of
+ * Ployd is an ops surface for a checkout, not just a task queue: half of
  * "does this work?" is starting the thing. This module reads a checkout's
  * manifest and answers two questions — which scripts exist, and what command
  * runs one on this project's package manager (npm / pnpm / yarn / bun, picked

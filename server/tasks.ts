@@ -151,7 +151,7 @@ export async function dispatchTask(task: Task, message?: string | null): Promise
     const slug = framing.slugify(task.title);
     // Precedence for the branch name: the task's own override, then the
     // workspace's branch convention, then git.addWorktree's built-in
-    // `srpopo/<slug>-<id>` (left untouched as the last resort). Every path that
+    // `ployd/<slug>-<id>` (left untouched as the last resort). Every path that
     // dispatches a task — REST, MCP, Autonomous Mode, orchestrator workers,
     // grooming-spawned tasks — comes through here, so this is the only place
     // the convention needs applying.

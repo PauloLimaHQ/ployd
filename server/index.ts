@@ -52,7 +52,10 @@ const app = express();
 // network; to keep it safe it MUST replace the lost boundary with a shared
 // token. HTTPS / internet tunneling / multi-user accounts are out of scope for
 // v1 (LAN + single shared token only).
-const REMOTE_TOKEN_COOKIE = 'srpopo_token';
+const REMOTE_TOKEN_COOKIE = 'ployd_token';
+// The cookie's name from before the rename. Still accepted (never set) so a
+// phone paired under the old name stays paired after the upgrade.
+const LEGACY_REMOTE_TOKEN_COOKIE = 'srpopo_token';
 
 // The port the HTTP server is actually listening on, captured at start()/rebind
 // so GET /api/remote-access can build the LAN pairing URL.
@@ -112,7 +115,7 @@ function tokenMatches(provided: string): boolean {
 function tokenPromptPage(): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sr. Popo — Access token</title>
+<title>Ployd — Access token</title>
 <style>
   :root { color-scheme: dark; }
   body { margin: 0; min-height: 100vh; display: grid; place-items: center;
@@ -131,7 +134,7 @@ function tokenPromptPage(): string {
 <body><form class="card" onsubmit="event.preventDefault();
     var t=document.getElementById('t').value.trim();
     if(t)location.href='/?token='+encodeURIComponent(t);">
-  <h1>Sr. Popo</h1>
+  <h1>Ployd</h1>
   <p>This board is protected. Enter the access token from the host machine's Settings &rsaquo; Remote Access.</p>
   <input id="t" type="password" autofocus placeholder="Access token" autocomplete="off">
   <button type="submit">Unlock</button>
@@ -239,7 +242,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const bearer = /^Bearer\s+(.+)$/i.exec(req.headers.authorization || '');
   const decision = authorizeRemote({
     local: isLocalRequest(req),
-    cookieToken: cookies[REMOTE_TOKEN_COOKIE] || '',
+    cookieToken: cookies[REMOTE_TOKEN_COOKIE] || cookies[LEGACY_REMOTE_TOKEN_COOKIE] || '',
     headerToken: bearer ? bearer[1] : '',
     queryToken: typeof req.query.token === 'string' ? req.query.token : '',
   });
@@ -592,9 +595,9 @@ app.get('/api/events', (req: Request, res: Response) => sse(req, res));
 
 // ---------- MCP server ----------
 
-// Board control over MCP's Streamable HTTP transport, live for as long as Sr.
-// Popo is running. An outside MCP client (e.g. `claude mcp add --transport http
-// srpopo http://127.0.0.1:7777/mcp`) can list/create/dispatch/stop tasks through
+// Board control over MCP's Streamable HTTP transport, live for as long as
+// Ployd is running. An outside MCP client (e.g. `claude mcp add --transport http
+// ployd http://127.0.0.1:7777/mcp`) can list/create/dispatch/stop tasks through
 // the same code paths as the REST API. See server/mcp.ts; localhost binding is
 // the only security boundary, exactly as for /api.
 app.post('/mcp', async (req: Request, res: Response) => {
@@ -842,7 +845,7 @@ app.post('/api/repos/reorder', (req: Request, res: Response) => {
 // The body's `settings` replaces the stored object wholesale rather than being
 // deep-merged, so the modal can turn a field back off simply by omitting it; a
 // sanitized result with nothing in it deletes the key entirely, which is what
-// makes "Reset to app defaults" return the workspace to Sr. Popo's own defaults.
+// makes "Reset to app defaults" return the workspace to Ployd's own defaults.
 app.patch('/api/repos/:id', (req: Request, res: Response) => {
   const repo = db.repos.find((r) => r.id === req.params.id);
   if (!repo) return err(res, 404, 'Repo not found');
@@ -926,7 +929,7 @@ app.get('/api/repos/:id/worktrees', async (req: Request, res: Response) => {
 // Unlike POST /api/tasks/:id/worktree/remove (which only clears a task's own
 // worktree), this also handles orphaned worktrees that have no owning task
 // (task deleted/archived while the worktree survived, or one created outside
-// Sr. Popo). The path is checked against `git worktree list` for the repo
+// Ployd). The path is checked against `git worktree list` for the repo
 // first so this can't be pointed at an arbitrary filesystem path.
 app.post('/api/repos/:id/worktrees/remove', async (req: Request, res: Response) => {
   const repo = db.repos.find((r) => r.id === req.params.id);
@@ -968,7 +971,7 @@ async function resolveRepoTarget(repo: Repo, rawPath: unknown): Promise<string |
 
 // Opens an in-app shell session rooted at the repo root or one of its live
 // worktrees, so the user can drop into a terminal on the checkout they're
-// viewing without leaving Sr. Popo. `kind` boots the shell straight into an
+// viewing without leaving Ployd. `kind` boots the shell straight into an
 // agent CLI ('claude' | 'codex' | 'grok'). Returns the new session's summary;
 // the board then streams it via GET /api/terminal/:id/stream.
 app.post('/api/repos/:id/terminal', async (req: Request, res: Response) => {
@@ -1143,7 +1146,7 @@ app.delete('/api/repos/:id', (req: Request, res: Response) => {
   res.json({ ok: true });
 });
 
-// ---------- ask sr. popo (free-form Q&A about a repo) ----------
+// ---------- ask ployd (free-form Q&A about a repo) ----------
 
 // Answer a developer's free-form question about a registered repo by running
 // a short, read-only Claude session inside it (see server/ask.ts, runner.ask).
@@ -1195,7 +1198,7 @@ app.post('/api/asks/:id/stop', (req: Request, res: Response) => {
 // A private, per-repo markdown document of durable learnings, distilled in the
 // background after each task that finishes successfully (see
 // runner.distillMemory) and injected into grooming sessions for context (see
-// groomer.metaPrompt). Lives only under Sr. Popo's own data dir — never inside
+// groomer.metaPrompt). Lives only under Ployd's own data dir — never inside
 // the user's repository (see server/memory.ts).
 
 app.get('/api/repos/:id/memory', (req: Request, res: Response) => {
@@ -2162,7 +2165,7 @@ function start(port: string | number = process.env.PORT || 7777): Promise<{ serv
       conflicts.start();
       // Periodic background refresh of review-column tasks' PR status (see
       // server/pr-refresh.ts) — always on, so a PR merged/closed outside
-      // Sr. Popo is reflected on the board without opening the task first.
+      // Ployd is reflected on the board without opening the task first.
       prRefresh.start();
       // Goal Orchestration engine: subscribes to the bus and re-arms the
       // watchers of any orchestration left `waiting` before a restart (see
@@ -2184,7 +2187,7 @@ export { isHostAllowed as _isHostAllowed, strippedTokenUrl as _strippedTokenUrl 
 // standalone server.
 if (require.main === module) {
   start().then(({ port }) => {
-    console.log(`\n  Sr. Popo is watching over your tasks at http://localhost:${port}\n`);
+    console.log(`\n  Ployd is watching over your tasks at http://localhost:${port}\n`);
   });
 
   process.on('SIGINT', () => {

@@ -1,4 +1,4 @@
-/* Sr. Popo — models. No build step: native ES module. */
+/* Ployd — models. No build step: native ES module. */
 import { esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { renderBoard } from './board.js';
@@ -114,7 +114,7 @@ export function init() {
   });
   $('#setting-notif-test').addEventListener('click', () => {
     // Works in both modes: under Electron the Web Notification routes to a native one.
-    showBrowserNotification('Sr. Popo', { body: 'Notifications are working.' }, true);
+    showBrowserNotification('Ployd', { body: 'Notifications are working.' }, true);
   });
   $('#setting-sounds').addEventListener('change', async (e) => {
     await saveSettings({ sounds: e.target.checked });

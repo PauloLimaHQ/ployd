@@ -3,7 +3,7 @@
  *
  * The orchestrator is a read-only `claude -p` session that owns ONE high-level goal
  * for ONE repo. It plans the goal, spawns worker tasks onto the Kanban board through
- * Sr. Popo's own MCP server (server/mcp.ts, registered as `board` — see
+ * Ployd's own MCP server (server/mcp.ts, registered as `board` — see
  * orchestrateArgs in server/agents/claude.ts), watches what those workers do,
  * and coordinates follow-ups until the goal is met. It never edits the repo
  * itself: the workers own every mutation.
@@ -26,8 +26,8 @@
 import * as sentinels from './sentinels';
 import type { Orchestration, OrchestrationMode, Task } from './types';
 
-const ORCH_START = '@@SRPOPO_ORCH_START@@';
-const ORCH_END = '@@SRPOPO_ORCH_END@@';
+const ORCH_START = '@@PLOYD_ORCH_START@@';
+const ORCH_END = '@@PLOYD_ORCH_END@@';
 
 // The four ways an orchestrator turn can end. They map onto the orchestration's own
 // lifecycle: waiting → 'waiting', question → 'awaiting', done → 'finished',
@@ -60,7 +60,7 @@ function statusContract(mode: OrchestrationMode): string[] {
     'Use one of these four shapes:',
     `  { "state": "waiting", "watch": ["taskId", …], "note": "what you are waiting for" }`,
     `      — you have work in flight. List the ids of the worker tasks whose results you need.`,
-    `        Sr. Popo wakes you up again as soon as those tasks ${watchWhen}.`,
+    `        Ployd wakes you up again as soon as those tasks ${watchWhen}.`,
     '  { "state": "question", "note": "the question, with enough context to answer it" }',
     '      — you need a decision only the developer can make. They reply in free text and you resume.',
     '        Use this sparingly: prefer a reasonable assumption you state out loud.',
@@ -159,7 +159,7 @@ function metaPrompt(
 
   if (memory && memory.trim()) {
     lines.push(
-      'What Sr. Popo remembers about this project (accumulated from past sessions; treat as helpful context,',
+      'What Ployd remembers about this project (accumulated from past sessions; treat as helpful context,',
       'verify against the code when it matters):',
       '"""',
       memory.trim(),

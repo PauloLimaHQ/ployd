@@ -1,4 +1,4 @@
-/* Sr. Popo — electron. No build step: native ES module. */
+/* Ployd — electron. No build step: native ES module. */
 import { showUpdateBanner, showUpdateDownloading, showUpdateInstallFailed, toast } from '../core/api.js';
 import { $, isElectron } from '../core/state.js';
 import { openBriefModal } from './grooming.js';
@@ -18,8 +18,8 @@ export function init() {
   // ---------- native menu bar (Electron) ----------
   // The main process owns no UI — it just forwards menu clicks here so every
   // action reuses the same modal/open functions as the on-screen buttons.
-  if (isElectron && window.srpopo.onMenuAction) {
-    window.srpopo.onMenuAction((action) => {
+  if (isElectron && window.ployd.onMenuAction) {
+    window.ployd.onMenuAction((action) => {
       switch (action) {
         case 'new-task': if (!modalOpen()) openTaskModal(); break;
         case 'brief-idea':
@@ -45,12 +45,12 @@ export function init() {
   // The main process downloads updates in the background (electron-updater) and
   // tells us when the download starts and when it's ready — never auto-restart
   // without the user clicking Relaunch.
-  if (isElectron && window.srpopo.onUpdateReady) {
-    window.srpopo.onUpdateReady((version) => showUpdateBanner(version));
-    window.srpopo.onUpdateDownloading?.((version) => showUpdateDownloading(version));
-    window.srpopo.onUpdateInstallFailed?.((releasesUrl) => showUpdateInstallFailed(releasesUrl));
+  if (isElectron && window.ployd.onUpdateReady) {
+    window.ployd.onUpdateReady((version) => showUpdateBanner(version));
+    window.ployd.onUpdateDownloading?.((version) => showUpdateDownloading(version));
+    window.ployd.onUpdateInstallFailed?.((releasesUrl) => showUpdateInstallFailed(releasesUrl));
     // The check may have landed before this window loaded — ask for the state.
-    window.srpopo.getUpdateStatus?.().then((s) => {
+    window.ployd.getUpdateStatus?.().then((s) => {
       if (!s) return;
       if (s.installFailed) showUpdateInstallFailed(s.installFailed);
       else if (s.ready) showUpdateBanner(s.ready);

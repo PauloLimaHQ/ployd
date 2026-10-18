@@ -1,4 +1,4 @@
-/* Sr. Popo — api. No build step: native ES module. */
+/* Ployd — api. No build step: native ES module. */
 import { $, icon } from './state.js';
 
 
@@ -38,17 +38,17 @@ function showUpdateBanner(version) {
   el.className = 'toast info update-banner';
   el.innerHTML =
     `${icon('rotate-cw')}` +
-    `<span>Sr. Popo${version ? ` v${esc(version)}` : ''} is downloaded and ready — relaunch to update.</span>` +
+    `<span>Ployd${version ? ` v${esc(version)}` : ''} is downloaded and ready — relaunch to update.</span>` +
     `<button class="btn primary" id="update-banner-btn">Relaunch to update</button>`;
   $('#toasts').appendChild(el);
-  $('#update-banner-btn').addEventListener('click', () => window.srpopo.restartToUpdate());
+  $('#update-banner-btn').addEventListener('click', () => window.ployd.restartToUpdate());
 }
 
 // Downloading an update takes a while and used to be silent. Say so once per
 // version — the flag is remembered so a board reload (or a re-check four hours
 // later) doesn't nag about the same download again.
 function showUpdateDownloading(version) {
-  const key = `srpopo:update-downloading-seen:${version || 'unknown'}`;
+  const key = `ployd:update-downloading-seen:${version || 'unknown'}`;
   if ($('#update-banner') || $('#update-downloading')) return;
   try {
     if (localStorage.getItem(key)) return;
@@ -59,7 +59,7 @@ function showUpdateDownloading(version) {
   el.className = 'toast info update-banner';
   el.innerHTML =
     `${icon('download')}` +
-    `<span>Downloading Sr. Popo${version ? ` v${esc(version)}` : ''} in the background — once it finishes you'll be able to relaunch to update.</span>` +
+    `<span>Downloading Ployd${version ? ` v${esc(version)}` : ''} in the background — once it finishes you'll be able to relaunch to update.</span>` +
     `<button class="btn ghost" id="update-downloading-dismiss">Got it</button>`;
   $('#toasts').appendChild(el);
   $('#update-downloading-dismiss').addEventListener('click', () => el.remove());
@@ -77,7 +77,7 @@ function showUpdateInstallFailed(releasesUrl) {
   el.className = 'toast info update-banner';
   el.innerHTML =
     `${icon('download')}` +
-    `<span>Sr. Popo downloaded an update but couldn't install it automatically on this build — grab it manually.</span>` +
+    `<span>Ployd downloaded an update but couldn't install it automatically on this build — grab it manually.</span>` +
     `<a class="btn primary" href="${esc(releasesUrl)}" target="_blank" rel="noopener">Download update</a>` +
     `<button class="btn ghost" id="update-install-failed-dismiss">Dismiss</button>`;
   $('#toasts').appendChild(el);

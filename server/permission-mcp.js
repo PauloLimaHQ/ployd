@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 /*
- * Sr. Popo permission-prompt bridge — a tiny MCP stdio server.
+ * Ployd permission-prompt bridge — a tiny MCP stdio server.
  *
- * `claude` is pointed at this process via `--permission-prompt-tool mcp__srpopo__approve`
+ * `claude` is pointed at this process via `--permission-prompt-tool mcp__ployd__approve`
  * (registered through `--mcp-config`, see runner.js). Whenever the CLI needs to ask
  * before running a tool, it calls our `approve` tool with `{ tool_name, input }`.
- * We forward that to the Sr. Popo server (`SRPOPO_APPROVAL_URL`), which surfaces it
+ * We forward that to the Ployd server (`PLOYD_APPROVAL_URL`), which surfaces it
  * as a prompt on the board and blocks until the user decides, then we hand the
  * decision back to the CLI as the tool result:
  *   { behavior: 'allow', updatedInput?: object } | { behavior: 'deny', message: string }
  *
  * MCP stdio transport is newline-delimited JSON-RPC 2.0. No dependencies — this is
- * intentionally hand-rolled to keep Sr. Popo dependency-light. Kept pure enough to
+ * intentionally hand-rolled to keep Ployd dependency-light. Kept pure enough to
  * unit-test: `respond(msg, ask)` builds a reply (or null for a notification) and
  * takes an injectable `ask` so tests never touch the network.
  */
@@ -24,7 +24,7 @@ const TOOL_NAME = 'approve';
 const TOOL_DEF = {
   name: TOOL_NAME,
   description:
-    'Ask the Sr. Popo user to approve or deny a tool call. Returns their decision; ' +
+    'Ask the Ployd user to approve or deny a tool call. Returns their decision; ' +
     'the user answers in the board UI. Do not call this yourself — the CLI invokes it.',
   inputSchema: {
     type: 'object',
@@ -42,11 +42,11 @@ function denied(message) {
   return { behavior: 'deny', message };
 }
 
-// POST the request to the Sr. Popo server and resolve with its decision. Any
+// POST the request to the Ployd server and resolve with its decision. Any
 // failure denies rather than throwing, so the CLI always gets a valid answer.
 function askServer(args) {
   return new Promise((resolve) => {
-    const endpoint = process.env.SRPOPO_APPROVAL_URL;
+    const endpoint = process.env.PLOYD_APPROVAL_URL;
     if (!endpoint) return resolve(denied('No approval endpoint configured'));
     let url;
     try { url = new URL(endpoint); } catch { return resolve(denied('Bad approval endpoint')); }
@@ -91,7 +91,7 @@ async function respond(msg, ask) {
         result: {
           protocolVersion: (params && params.protocolVersion) || PROTOCOL_VERSION,
           capabilities: { tools: {} },
-          serverInfo: { name: 'srpopo', version: '1.0.0' },
+          serverInfo: { name: 'ployd', version: '1.0.0' },
         },
       };
     case 'ping':

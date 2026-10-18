@@ -1,4 +1,4 @@
-/* Sr. Popo — repo-settings. No build step: native ES module.
+/* Ployd — repo-settings. No build step: native ES module.
  *
  * The workspace-settings modal: one repository's branch-naming convention plus
  * the values new tasks / groomings created in it are prefilled with.
@@ -11,7 +11,7 @@
  * preview a name as you type.
  *
  * A control left on "App default" is *unset*, not pinned — that is what keeps a
- * workspace on Sr. Popo's built-in behavior, and what "Reset to app defaults"
+ * workspace on Ployd's built-in behavior, and what "Reset to app defaults"
  * (PATCH with `{ settings: {} }`) puts it back to.
  */
 import { api, esc, toast } from '../core/api.js';
@@ -100,13 +100,13 @@ function renderBranchPreview() {
   const template = $('#repo-settings-branch-template').value;
   const el = $('#repo-settings-branch-preview');
   if (!template.trim()) {
-    el.innerHTML = `A task titled “${esc(SAMPLE_TITLE)}” would branch as <code>srpopo/${esc(previewBranch('{slug}-{id}') || '')}</code>.`;
+    el.innerHTML = `A task titled “${esc(SAMPLE_TITLE)}” would branch as <code>ployd/${esc(previewBranch('{slug}-{id}') || '')}</code>.`;
     return;
   }
   const resolved = previewBranch(template);
   el.innerHTML = resolved
     ? `A task titled “${esc(SAMPLE_TITLE)}” would branch as <code>${esc(resolved)}</code>.`
-    : `${icon('triangle-alert')} <span>That template doesn't leave a usable branch name — tasks would fall back to <code>srpopo/&lt;slug&gt;-&lt;id&gt;</code>.</span>`;
+    : `${icon('triangle-alert')} <span>That template doesn't leave a usable branch name — tasks would fall back to <code>ployd/&lt;slug&gt;-&lt;id&gt;</code>.</span>`;
 }
 
 // Show only the chosen agent's models, the same way the New Task composer does.

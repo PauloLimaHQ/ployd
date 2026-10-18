@@ -1,4 +1,4 @@
-/* Sr. Popo — autonomous. No build step: native ES module. */
+/* Ployd — autonomous. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { linearConfigured } from './linear.js';

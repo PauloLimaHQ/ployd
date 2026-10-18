@@ -1,4 +1,4 @@
-/* Sr. Popo — ask. No build step: native ES module. */
+/* Ployd — ask. No build step: native ES module. */
 import { api, esc, mdToHtml, toast } from '../core/api.js';
 import { $, icon, state } from '../core/state.js';
 import { openReposModal } from './repos-modal.js';
@@ -6,7 +6,7 @@ import { loadLastUsed } from './task-modal.js';
 import { currentWorkspaceRepoId } from './workspaces.js';
 
 
-// ---------- ask sr. popo (free-form Q&A about a repo) ----------
+// ---------- ask ployd (free-form Q&A about a repo) ----------
 function refreshAskRepoSelect() {
   const sel = $('#ask-repo');
   sel.innerHTML = state.repos.length

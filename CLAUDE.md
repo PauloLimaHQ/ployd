@@ -2,9 +2,9 @@
 
 Guidance for Claude Code (and any AI agent) working in this repository.
 
-## What Sr. Popo is
+## What Ployd is
 
-Sr. Popo is a **local orchestrator hub for coding-agent tasks**. You queue prompts
+Ployd is a **local orchestrator hub for coding-agent tasks**. You queue prompts
 against your own git repositories on a Kanban board, dispatch them, and watch each
 agent session stream live — tool calls, subagents, cost, and the final diff — from one
 place. Each task picks its backend: **Claude Code** (the default), **OpenAI Codex**
@@ -35,7 +35,7 @@ static with **no build step** (see Conventions).
 | `server/spawnCompat.ts` | `spawnCompat`: a `child_process.spawn` drop-in that also launches `.cmd`/`.bat` shims on Windows (npm-installed CLIs and editor launchers) by routing through a correctly-escaped `cmd.exe /d /s /c` — used everywhere a binary is launched by bare name instead of the raw `spawn`. |
 | `server/store.ts` | JSON persistence (`db.json`) + append-only per-task NDJSON logs. |
 | `server/tasks.ts` | Task lifecycle service (`createTask`/`dispatchTask` + capacity gate) shared by the REST API and the MCP server, so both queue/run tasks identically. |
-| `server/mcp.ts` | **Board MCP server** (see "MCP server" below). Streamable-HTTP MCP endpoint mounted on the Express app at `POST /mcp` so outside MCP clients can drive the board while Sr. Popo runs. |
+| `server/mcp.ts` | **Board MCP server** (see "MCP server" below). Streamable-HTTP MCP endpoint mounted on the Express app at `POST /mcp` so outside MCP clients can drive the board while Ployd runs. |
 | `server/git.ts` | Worktree lifecycle (`git worktree add/remove`). |
 | `server/terminal.ts` | In-app shell sessions: a pty per session (a python3 relay, no native module), their status, and the resize channel (see "Terminal sessions"). |
 | `server/desktop.ts` | Desktop hand-offs for the workspace quick actions: reveal a checkout in the OS file manager, or open it in the user's IDE (see "Workspace quick actions"). |
@@ -43,7 +43,7 @@ static with **no build step** (see Conventions).
 | `server/resources.ts` | Opt-in resource monitor: samples the OS process table and reports what the app and each live agent session cost this machine (see "Resource monitor"). |
 | `server/github.ts` | `gh` CLI integration: read-only lookup of a task's pull request, its merge-safety check, the merge itself, and the `mergeable/<n>` grade label. |
 | `server/reviewer.ts` | Meta-prompt + verdict parser for the **Code Review** stage (see "Code Review" below). |
-| `server/pr-refresh.ts` | Background sweep that keeps validation-column tasks' PR status current (broadcasts a `pr` bus event on change) so a PR merged/closed outside Sr. Popo shows up without opening the task. |
+| `server/pr-refresh.ts` | Background sweep that keeps validation-column tasks' PR status current (broadcasts a `pr` bus event on change) so a PR merged/closed outside Ployd shows up without opening the task. |
 | `server/bus.ts` | Server-Sent Events fan-out for the live board + timeline. |
 | `server/addons.ts` | Catalog of opt-in task behaviors (see "Add-ons" below). |
 | `server/personas.ts` | Catalog of expert-persona role preambles. |
@@ -64,7 +64,7 @@ static with **no build step** (see Conventions).
 | `public/features/` | One module per feature (`board.js`, `task-modal.js`, `drawer.js`, `pr.js`, `autonomous.js`, …). A feature change should touch one file here. |
 | `public/features/home.js` | The Super View's front door: the centered New-Task composer and the recent-tasks list (see "Home: the Super View's composer"). The workspace grid below them stays in `workspaces.js`. |
 | `public/features/tabs.js` | The work area's tab strip in the sidebar layout — one tab per open project board and per shell session, plus the pinned Super View tab. Owns `#workarea`'s pane visibility (`applyPanes`), so `renderView()` and `focusSession()` both defer to it. No-op in the classic layout (see "The tabbed work area"). |
-| `public/icons.js` | Inline-SVG icon set (Lucide) + a tiny renderer/hydrator. Loaded as a **classic script before the module graph**, so it publishes `window.srpopoIcons` rather than exporting. The only source of UI glyphs — no emojis. |
+| `public/icons.js` | Inline-SVG icon set (Lucide) + a tiny renderer/hydrator. Loaded as a **classic script before the module graph**, so it publishes `window.ploydIcons` rather than exporting. The only source of UI glyphs — no emojis. |
 | `tests/smoke.test.ts` | `node:test` smoke suite, run via `tsx`. |
 | `tsconfig.json` | `tsc` config: CommonJS output → `dist/`, `strict`, `rootDir: "."`. |
 | `dist/` | Compiled JS (gitignored). What Electron + electron-builder load. |
@@ -141,7 +141,7 @@ always reviews.
   like `groomer.ts` is for grooming): a fresh independent reviewer, read-only on the
   code, that reads the full diff plus surrounding code, posts **one** PR comment with
   `gh pr comment`, and closes its turn with `{ grade, summary, blockers, commentUrl }`
-  between the `@@SRPOPO_REVIEW_*@@` sentinels. `reviewArgs` (in
+  between the `@@PLOYD_REVIEW_*@@` sentinels. `reviewArgs` (in
   `server/agents/claude.ts`) allows only the research tools plus `git status` and
   `gh pr view/diff/comment` — never `Write`/`Edit`, never `--resume`, never the
   permission bridge, so anything else is auto-denied by the headless run.
@@ -183,7 +183,7 @@ by `task.agent` and reacts only to `NormalizedEvent`s the adapter's `parseLine`
 produces. The adapter owns everything provider-specific — the binary, the
 subscription-only env stripping, `buildArgs`/`groomArgs`, how the prompt is
 delivered, and the JSONL normalizer. Adding a backend means adding an adapter; the
-runner doesn't change. Every backend keeps Sr. Popo's ergonomics: local-only,
+runner doesn't change. Every backend keeps Ployd's ergonomics: local-only,
 **subscription login (never an API key)**, streamed to the board, no new runtime
 dependency.
 
@@ -212,7 +212,7 @@ dependency.
     only reason `launch()` knows about prompt delivery at all; every other backend
     takes the default stdin path.
   - **Permission modes map almost 1:1** (Grok takes `acceptEdits` / `plan` /
-    `bypassPermissions` verbatim), with one deliberate translation: Sr. Popo's
+    `bypassPermissions` verbatim), with one deliberate translation: Ployd's
     `default` means "ask", and a headless run has nobody to ask, so it becomes Grok's
     **`dontAsk`** — which *denies* anything outside the allow-list instead of waiting
     on a prompt that can never be shown. That reproduces `claude -p`'s auto-deny.
@@ -271,10 +271,10 @@ would require it.
    spawned task — `ANTHROPIC_API_KEY` for Claude, `OPENAI_API_KEY` for Codex,
    `XAI_API_KEY` for Grok — so runs always use the subscription login (`claude` /
    `codex login` / `grok login`). Keep them stripped.
-3. **Strip nested-session env** (`CLAUDECODE`, `CLAUDE_CODE_ENTRYPOINT`) so Sr. Popo can
+3. **Strip nested-session env** (`CLAUDECODE`, `CLAUDE_CODE_ENTRYPOINT`) so Ployd can
    itself be launched from Claude Code without confusing the child. Shared by every
    backend (`server/agents/env.ts`).
-4. **Data stays local and per-user.** `SRPOPO_DATA_DIR` (Electron `userData`) holds
+4. **Data stays local and per-user.** `PLOYD_DATA_DIR` (Electron `userData`) holds
    `db.json` + `logs/`. Don't send task content anywhere off-machine.
 5. **Renderer stays sandboxed.** `contextIsolation: true`, `nodeIntegration: false`.
    The UI talks to the server over HTTP; the preload bridge stays minimal.
@@ -302,7 +302,7 @@ would require it.
   shadcn/ui uses; ISC-licensed, inlined so there's no icon font, network fetch, or
   build step). They inherit `currentColor`, so they theme for free. In static HTML
   drop a placeholder — `<span class="i" data-icon="play"></span>` — that
-  `hydrate()` fills on load; in dynamic markup call `srpopoIcons.svg('play')`
+  `hydrate()` fills on load; in dynamic markup call `ploydIcons.svg('play')`
   inside the template string (its output is trusted markup — never pass it through
   `esc()`). Need a new glyph? Add one entry to the `ICONS` map in `icons.js`. Emojis
   are still acceptable where SVG can't reach — e.g. OS notification text — but avoid
@@ -405,7 +405,7 @@ human to answer (autonomous mode's dispatch/review passes, `server/autonomous.ts
 force it to `false` explicitly.
 
 The wiring:
-- **`runner.buildArgs`** adds `--permission-prompt-tool mcp__srpopo__approve` and a
+- **`runner.buildArgs`** adds `--permission-prompt-tool mcp__ployd__approve` and a
   `--mcp-config` that registers **`server/permission-mcp.js`** — a tiny, dependency-free
   MCP **stdio** bridge (newline-delimited JSON-RPC 2.0). It runs as plain Node even
   inside the packaged Electron binary via `ELECTRON_RUN_AS_NODE=1`.
@@ -487,9 +487,16 @@ Both live in `localStorage`, never in `db.json` — the desktop app and a phone
 paired over the LAN each keep their own (and there is no server round-trip to
 change one).
 
-- **Theme** — `srpopo.theme`: System / Light / Dark, read by an inline `<head>`
+- **Theme** — `ployd.theme`: System / Light / Dark, read by an inline `<head>`
   script so the first paint already matches.
-- **Layout** — `srpopo.layout`: `sidebar` (**the default**) is the integrated
+- **Color theme** — `ployd.palette`: Paper (the default, no attribute) /
+  Graphite / Nord / Solarized / Rosé Pine, set as `data-palette` on `<html>`.
+  Orthogonal to the theme: each palette has a light and a dark block keyed off
+  `data-scheme`, the *resolved* light/dark (the OS preference included) that
+  `theme.js` and the `<head>` script keep current. A palette overrides only the
+  tokens it changes and falls through to Paper's for the rest; adding one is a
+  CSS block pair, an `<option>`, and a `PALETTES` entry.
+- **Layout** — `ployd.layout`: `sidebar` (**the default**) is the integrated
   shell — a persistent project rail on the left, and a **tabbed work area** to
   its right; `classic` is the older shape, the Super View grid plus one repo's
   board with a terminal docked at the bottom of the window. Applied by
@@ -542,7 +549,7 @@ front. A tab is one of three kinds — a pinned, non-closable **`super`** tab (t
 View), a **`repo`** tab (that project's full board, header and filters included), or a
 **`session`** tab (an in-app shell). The rail is where you *find* things; a tab is
 where one of them stays open while you go look at another. `state.tabs` + `state.activeTab`
-are the open set; `srpopo.tabs` in `localStorage` persists it per device, next to the
+are the open set; `ployd.tabs` in `localStorage` persists it per device, next to the
 theme and layout — it never reaches `db.json`.
 
 Three rules keep it honest and cheap:
@@ -632,7 +639,7 @@ They are **defaults, not overrides**, and only two things read them:
   materialized — so every path that dispatches a task (REST, MCP, Autonomous Mode,
   orchestrator workers, grooming-spawned tasks) gets it for free. Precedence there is
   **`task.branchName` > the workspace template > `git.addWorktree`'s own
-  `srpopo/<slug>-<id>`**, which stays untouched as the last resort. Uniqueness is not
+  `ployd/<slug>-<id>`**, which stays untouched as the last resort. Uniqueness is not
   this module's problem: a template without `{id}`/`{slug}` can collide, and `git
   worktree add` then fails loudly through the existing dispatch error path.
 - **New-task / new-grooming defaults.** `tasks.createTask` and `index.createGrooming`
@@ -644,7 +651,7 @@ They are **defaults, not overrides**, and only two things read them:
   imports — are *not* given repo defaults; they still pick up the branch convention.
 
 In the board, a workspace with anything configured **beats the browser's last-used
-memory** (`localStorage['srpopo.lastTaskSettings']`) outright for that repo, falling
+memory** (`localStorage['ployd.lastTaskSettings']`) outright for that repo, falling
 back to the hardcoded defaults for whatever it leaves unset; a repo with nothing
 configured keeps today's last-used behavior unchanged. The app-wide `Settings`
 (`mergeStrategy`, `minMergeGrade`, `autoResolveConflicts`, `assignPrToSelf`,
@@ -653,7 +660,7 @@ affected by any of this — they stay global.
 
 ## Package scripts: the workspace's Run button
 
-Sr. Popo is an ops surface for a checkout, not only a task queue — and half of "does
+Ployd is an ops surface for a checkout, not only a task queue — and half of "does
 this work?" is starting the thing. An **installable plugin** (`node-scripts` in
 `server/plugins.ts`) gives a workspace whose checkout has a `package.json` a **Run**
 split button in the header, next to Terminal: the main half starts the project, the
@@ -758,7 +765,7 @@ preserves scrollback.
 
 ## Resource monitor (how much of this machine we're using)
 
-Running several agents at once is the whole point of Sr. Popo, so the board can show
+Running several agents at once is the whole point of Ployd, so the board can show
 what that costs: `server/resources.ts` samples the OS process table and reports CPU +
 memory for **this app** and for **each live agent session**, attributed per
 task/grooming/orchestration/ask card.
@@ -822,13 +829,13 @@ watch for it.
 
 ## MCP server: drive the board from outside
 
-Sr. Popo exposes its own board as an **MCP server** for as long as it's running, so
+Ployd exposes its own board as an **MCP server** for as long as it's running, so
 an outside MCP client — e.g. a separate Claude Code session — can list, create,
 dispatch, and stop tasks. It's mounted straight onto the Express app at `POST /mcp`
 using MCP's **Streamable HTTP** transport (`server/mcp.ts`); connect with:
 
 ```bash
-claude mcp add --transport http srpopo http://127.0.0.1:7777/mcp
+claude mcp add --transport http ployd http://127.0.0.1:7777/mcp
 ```
 
 Don't confuse this with `server/permission-mcp.js`: that one is a per-task **stdio**
@@ -869,7 +876,7 @@ research tools are auto-approved — see `groomArgs`; no worktree is ever create
 nothing is written, so there's nothing on disk to clean up). Its job is to think the
 idea through and propose **one or more** self-contained task prompts.
 `server/groomer.ts` owns the meta-prompt and the parser that recovers the
-`{ tasks: [{ title, prompt, ready }] }` spec (emitted between `@@SRPOPO_SPEC_*@@`
+`{ tasks: [{ title, prompt, ready }] }` spec (emitted between `@@PLOYD_SPEC_*@@`
 sentinels). On success `spawnGroomedTasks` (in `index.ts`) creates the tasks — in
 `backlog` or `ready` per the card's `target` (`backlog` | `ready` | `auto`, where
 `auto` honors each spec's own `ready` flag) — and the card finishes with their ids on
@@ -907,16 +914,16 @@ locked column; the status only recolors it in place.
 
 The **orchestrator** is a read-only `claude -p` session scoped to one repo and one
 high-level goal. It plans, and **workers do all the editing** — it is given the
-grooming research tools plus Sr. Popo's own board tools and nothing else
+grooming research tools plus Ployd's own board tools and nothing else
 (`orchestrateArgs` in `server/agents/claude.ts`), so a write tool is auto-denied by the
 headless run. It reaches the board through the **`/mcp` server** (`server/mcp.ts`),
 registered via `--mcp-config` as an **HTTP** MCP server named `board` pointing at the
 app's own `127.0.0.1` base URL — verified against a live `claude` CLI, so no stdio
 proxy is needed. Never confuse that name with the per-task permission bridge
-(`srpopo`); the orchestrator gets no permission bridge and no worktree.
+(`ployd`); the orchestrator gets no permission bridge and no worktree.
 
-Every orchestrator turn ends with ONE JSON object between `@@SRPOPO_ORCH_START@@` /
-`@@SRPOPO_ORCH_END@@` (parsed by `orchestrator.parseStatus`): `waiting` (with the
+Every orchestrator turn ends with ONE JSON object between `@@PLOYD_ORCH_START@@` /
+`@@PLOYD_ORCH_END@@` (parsed by `orchestrator.parseStatus`): `waiting` (with the
 worker task ids to watch), `question`, `done`, or `blocked`.
 `server/orchestrator-engine.ts` is the engine: it subscribes to the SSE bus and, when
 a watched worker reaches `validation`/`done`/`failed` (the last covering Autonomous Mode's
@@ -937,16 +944,16 @@ runs in manual mode — it dispatches its own tasks and a human merges.
 
 ## Maintaining this repo with Claude (the meta-workflow)
 
-Sr. Popo is built to maintain itself. Prefer this loop for non-trivial changes:
+Ployd is built to maintain itself. Prefer this loop for non-trivial changes:
 
-1. **Register this repo** in Sr. Popo (📁 Repos) and open a **New Task** with a focused
-   prompt. Enable **Worktree** so work runs isolated on a `srpopo/<slug>` branch.
+1. **Register this repo** in Ployd (📁 Repos) and open a **New Task** with a focused
+   prompt. Enable **Worktree** so work runs isolated on a `ployd/<slug>` branch.
 2. Turn on the **"self code review"** add-on for anything non-trivial, and the
    **"open a PR"** add-on when you want the run to finish with a `gh pr create`.
 3. **Dispatch**, then read the streamed session in the **Validation** column: the
    diff, the tool calls, the Code Review grade, and the final cost/turns before
    accepting.
-4. Locally, whether the change came from Sr. Popo or a direct session, gate it on:
+4. Locally, whether the change came from Ployd or a direct session, gate it on:
    ```bash
    npm run typecheck && npm run lint && npm test
    ```
@@ -963,12 +970,12 @@ respect the invariants above, run lint + test, and summarize the diff and any ri
 - `db.json` is written atomically (temp file + rename) and debounced; go through
   `store.save()` rather than writing it directly.
 - The packaged app runs from a read-only bundle — never write inside the app dir; use
-  `SRPOPO_DATA_DIR`.
+  `PLOYD_DATA_DIR`.
 - Builds are unsigned for now; don't add signing/notarization steps without the
   credentials being configured. This means macOS auto-update can download and
   verify a new version, but Squirrel.Mac (the native installer electron-updater
   drives on macOS) refuses to actually apply it without a real Developer ID
   signature — an ad-hoc-signed build fails that step silently in the background.
   `electron/main.ts` detects the failure and swaps the "Relaunch to update"
-  banner for a manual-download link (`srpopo:update-install-failed`) instead of
+  banner for a manual-download link (`ployd:update-install-failed`) instead of
   leaving a button that does nothing. Don't "fix" it by ignoring the error.

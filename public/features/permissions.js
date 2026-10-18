@@ -1,4 +1,4 @@
-/* Sr. Popo — permissions. No build step: native ES module. */
+/* Ployd — permissions. No build step: native ES module. */
 import { api, esc, hasPermissionBridge, toast } from '../core/api.js';
 import { $, icon, isAutoApprove, isGroomingLive, isLive, isOrchestrationLive, pendingPermissions, setAutoApproveLocal, setPendingPermissions, state } from '../core/state.js';
 import { renderBoard } from './board.js';
@@ -113,7 +113,7 @@ function maybeNotifyPermission(msg) {
   const title = t ? t.title : 'A task';
   showBrowserNotification('Approval needed', {
     body: `${title} wants to run ${msg.request.toolName}`,
-    tag: `srpopo-perm-${msg.taskId}`,
+    tag: `ployd-perm-${msg.taskId}`,
   });
 }
 

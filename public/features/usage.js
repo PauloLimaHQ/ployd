@@ -1,4 +1,4 @@
-/* Sr. Popo — usage. No build step: native ES module. */
+/* Ployd — usage. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, state } from '../core/state.js';
 import { money } from './autonomous.js';

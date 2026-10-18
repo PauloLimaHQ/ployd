@@ -1,4 +1,4 @@
-/* Sr. Popo — filter-bar. No build step: native ES module. */
+/* Ployd — filter-bar. No build step: native ES module. */
 import { $, state } from '../core/state.js';
 import { renderBoard } from './board.js';
 import { onFiltersChanged, saveFilters } from './filters.js';

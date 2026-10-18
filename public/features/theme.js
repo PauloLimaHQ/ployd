@@ -1,4 +1,4 @@
-/* Sr. Popo — theme. No build step: native ES module. */
+/* Ployd — theme. No build step: native ES module. */
 import { toast } from '../core/api.js';
 import { $ } from '../core/state.js';
 import { syncTerminalHost } from './terminal.js';
@@ -12,9 +12,14 @@ import { renderView } from './workspaces.js';
 // and a phone paired over the LAN can differ; the same value is read by an
 // inline <head> script so the first paint already matches. cycleTheme() backs
 // the command palette entry and the Electron menu item.
-const THEME_KEY = 'srpopo.theme';
+const THEME_KEY = 'ployd.theme';
 const THEME_CYCLE = ['system', 'light', 'dark'];
 const THEME_LABEL = { system: 'System', light: 'Light', dark: 'Dark' };
+
+// The OS preference, for resolving 'system' into data-scheme below. A context
+// without matchMedia just counts as light.
+const DARK_QUERY = typeof window.matchMedia === 'function'
+  ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
 function currentTheme() {
   try {
@@ -22,12 +27,20 @@ function currentTheme() {
     return t === 'light' || t === 'dark' ? t : 'system';
   } catch { return 'system'; }
 }
+// data-scheme is always the *resolved* light/dark, the OS preference
+// included. The Paper tokens key off data-theme + the media query as before;
+// the color themes key off data-scheme, so they need no media-query copies.
+function syncScheme(mode = currentTheme()) {
+  const dark = mode === 'dark' || (mode === 'system' && !!DARK_QUERY?.matches);
+  document.documentElement.setAttribute('data-scheme', dark ? 'dark' : 'light');
+}
 function applyTheme(mode) {
   if (mode === 'light' || mode === 'dark') {
     document.documentElement.setAttribute('data-theme', mode);
   } else {
     document.documentElement.removeAttribute('data-theme');
   }
+  syncScheme(mode);
   try {
     if (mode === 'system') localStorage.removeItem(THEME_KEY);
     else localStorage.setItem(THEME_KEY, mode);
@@ -42,7 +55,45 @@ function cycleTheme() {
 }
 function initTheme() {
   applyTheme(currentTheme());
+  applyPalette(currentPalette());
   $('#setting-theme').addEventListener('change', (e) => applyTheme(e.target.value));
+  $('#setting-palette').addEventListener('change', (e) => applyPalette(e.target.value));
+  // Following the OS: re-resolve when it flips (no-op while light/dark is pinned).
+  DARK_QUERY?.addEventListener('change', () => syncScheme());
+}
+
+// ---------- color theme (appearance) ----------
+// Which tint the board wears, independent of light/dark: every palette has
+// both halves, so "System" keeps following the OS whatever the colors are.
+// Device-local in localStorage like the theme; the inline <head> script reads
+// the same key so the first paint is already tinted. 'paper' is the original
+// warm look and is the absence of data-palette, not a CSS block of its own.
+const PALETTE_KEY = 'ployd.palette';
+const DEFAULT_PALETTE = 'paper';
+const PALETTES = ['paper', 'graphite', 'nord', 'solarized', 'rose-pine'];
+const PALETTE_LABEL = { paper: 'Paper', graphite: 'Graphite', nord: 'Nord', solarized: 'Solarized', 'rose-pine': 'Rosé Pine' };
+
+function currentPalette() {
+  try {
+    const stored = localStorage.getItem(PALETTE_KEY);
+    return PALETTES.includes(stored) ? stored : DEFAULT_PALETTE;
+  } catch { return DEFAULT_PALETTE; }
+}
+function applyPalette(name) {
+  const palette = PALETTES.includes(name) ? name : DEFAULT_PALETTE;
+  if (palette === DEFAULT_PALETTE) document.documentElement.removeAttribute('data-palette');
+  else document.documentElement.setAttribute('data-palette', palette);
+  try {
+    if (palette === DEFAULT_PALETTE) localStorage.removeItem(PALETTE_KEY);
+    else localStorage.setItem(PALETTE_KEY, palette);
+  } catch { /* storage unavailable — non-fatal */ }
+  const select = $('#setting-palette');
+  if (select) select.value = palette;
+}
+function cyclePalette() {
+  const next = PALETTES[(PALETTES.indexOf(currentPalette()) + 1) % PALETTES.length];
+  applyPalette(next);
+  toast(`Color theme: ${PALETTE_LABEL[next]}`, 'info');
 }
 
 // ---------- layout (appearance) ----------
@@ -54,7 +105,7 @@ function initTheme() {
 // docked at the bottom of the window. Device-local in localStorage like the
 // theme, so the desktop app and a phone on the LAN can each pick their own —
 // it never reaches db.json.
-const LAYOUT_KEY = 'srpopo.layout';
+const LAYOUT_KEY = 'ployd.layout';
 const LAYOUTS = ['sidebar', 'classic'];
 const DEFAULT_LAYOUT = 'sidebar';
 const LAYOUT_LABEL = { classic: 'Classic board', sidebar: 'Project sidebar' };
@@ -96,4 +147,7 @@ function initLayout() {
   $('#setting-layout').addEventListener('change', (e) => applyLayout(e.target.value));
 }
 
-export { LAYOUT_LABEL, THEME_LABEL, currentLayout, currentTheme, cycleTheme, initLayout, initTheme, toggleLayout };
+export {
+  LAYOUT_LABEL, PALETTE_LABEL, THEME_LABEL, currentLayout, currentPalette, currentTheme, cyclePalette, cycleTheme,
+  initLayout, initTheme, toggleLayout,
+};

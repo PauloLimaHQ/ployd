@@ -1,4 +1,4 @@
-/* Sr. Popo — workspace-picker. No build step: native ES module. */
+/* Ployd — workspace-picker. No build step: native ES module. */
 import { esc } from '../core/api.js';
 import { $, icon, isLive, state } from '../core/state.js';
 import { tasksForRepo } from './filters.js';

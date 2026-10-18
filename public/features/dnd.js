@@ -1,4 +1,4 @@
-/* Sr. Popo — dnd. No build step: native ES module. */
+/* Ployd — dnd. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, COLUMN_OF_STATUS, icon, isLive, state } from '../core/state.js';
 import { openFollowupModal } from './followup.js';

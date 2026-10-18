@@ -1,4 +1,4 @@
-/* Sr. Popo — linear. No build step: native ES module. */
+/* Ployd — linear. No build step: native ES module. */
 import { api, esc, toast } from '../core/api.js';
 import { $, state } from '../core/state.js';
 import { renderBoard } from './board.js';

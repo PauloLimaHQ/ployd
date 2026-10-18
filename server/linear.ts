@@ -1,5 +1,5 @@
 /*
- * Linear integration — turn a Linear issue into a Sr. Popo grooming task.
+ * Linear integration — turn a Linear issue into a Ployd grooming task.
  *
  * A small, self-contained integration module in the mold of github.ts (not a
  * general plugin framework): it mirrors the single-source-of-truth pattern of
@@ -37,7 +37,7 @@ const IDENTIFIER_RE = /^([A-Za-z][A-Za-z0-9]*)-(\d+)$/;
 // The active issues assigned to the current viewer. Ordering/capping happens in
 // parseIssueList so it stays deterministic and unit-testable.
 const MY_ISSUES_QUERY = `
-  query SrPopoMyIssues($first: Int!) {
+  query PloydMyIssues($first: Int!) {
     viewer {
       assignedIssues(first: $first) {
         nodes { id identifier title url updatedAt state { name } }
@@ -58,13 +58,13 @@ const ISSUE_FIELDS = `
   }`;
 
 const ISSUE_BY_ID_QUERY = `
-  query SrPopoIssue($id: String!) {
+  query PloydIssue($id: String!) {
     issue(id: $id) { ${ISSUE_FIELDS} }
   }`;
 
 // Lookup by human identifier (e.g. ABC-123) via team key + issue number.
 const ISSUE_BY_IDENTIFIER_QUERY = `
-  query SrPopoIssueByIdentifier($key: String!, $number: Float!) {
+  query PloydIssueByIdentifier($key: String!, $number: Float!) {
     issues(first: 1, filter: { team: { key: { eq: $key } }, number: { eq: $number } }) {
       nodes { ${ISSUE_FIELDS} }
     }

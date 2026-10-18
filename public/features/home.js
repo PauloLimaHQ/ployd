@@ -1,4 +1,4 @@
-/* Sr. Popo — home. No build step: native ES module.
+/* Ployd — home. No build step: native ES module.
  *
  * The Super View's front door: a centered composer that queues a task into any
  * project without opening the New Task dialog, plus the last few tasks across

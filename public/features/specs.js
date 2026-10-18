@@ -1,4 +1,4 @@
-/* Sr. Popo — specs. No build step: native ES module. */
+/* Ployd — specs. No build step: native ES module. */
 import { api, esc, relativeTime, toast } from '../core/api.js';
 import { $, state } from '../core/state.js';
 import { openReposModal } from './repos-modal.js';

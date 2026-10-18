@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { app, BrowserWindow, Tray, Menu, nativeImage, shell, ipcMain, dialog, Notification } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -6,19 +7,41 @@ import { appRoot } from '../server/paths';
 import { resolveClaudeEnv } from './resolve-env';
 
 // Pin the name so dev and packaged builds resolve the SAME userData folder
-// (~/Library/Application Support/Sr. Popo) instead of splitting on package name.
-app.setName('Sr. Popo');
+// (~/Library/Application Support/Ployd) instead of splitting on package name.
+app.setName('Ployd');
+
+// The app shipped as "Sr. Popo" before, so existing installs keep everything in
+// a userData folder of that name — db.json and the task logs, but also the
+// board's localStorage (theme, layout, open tabs). Move it under the new name
+// once rather than booting into an empty board. If the move can't happen (the
+// new folder already exists without data, or the rename fails), keep running on
+// the legacy folder: a mis-named folder is better than a lost one.
+const LEGACY_APP_NAME = 'Sr. Popo';
+function adoptLegacyUserData(): void {
+  const current = app.getPath('userData');
+  const legacy = path.join(path.dirname(current), LEGACY_APP_NAME);
+  const hasDb = (dir: string) => fs.existsSync(path.join(dir, 'data', 'db.json'));
+  if (hasDb(current) || !hasDb(legacy)) return;
+  if (!fs.existsSync(current)) {
+    try {
+      fs.renameSync(legacy, current);
+      return;
+    } catch { /* fall through to the legacy folder */ }
+  }
+  app.setPath('userData', legacy);
+}
+adoptLegacyUserData();
 
 // Repair PATH (and pin CLAUDE_BIN) BEFORE requiring the server: a Finder/Dock-
 // launched app doesn't inherit the shell PATH, so `claude` would otherwise be
 // unresolvable. runner.ts reads CLAUDE_BIN at import time, so this must run first.
 resolveClaudeEnv();
 
-// Persist Sr. Popo's data (db.json + logs) in a writable per-user location.
+// Persist Ployd's data (db.json + logs) in a writable per-user location.
 // The server module reads this before it touches the filesystem — so require it
 // (in place) only AFTER the env var is set, rather than importing it at the top
 // where the binding would hoist above this assignment.
-process.env.SRPOPO_DATA_DIR = path.join(app.getPath('userData'), 'data');
+process.env.PLOYD_DATA_DIR = path.join(app.getPath('userData'), 'data');
 
 const server = require('../server/index') as typeof import('../server/index');
 const store = require('../server/store') as typeof import('../server/store'); // read live task state for the tray
@@ -45,7 +68,7 @@ const RELEASES_URL = 'https://github.com/PauloLimaHQ/srpopo/releases/latest';
 function notifyUpdateInstallFailed(): void {
   updateReadyVersion = null;
   updateInstallFailed = true;
-  if (mainWindow) mainWindow.webContents.send('srpopo:update-install-failed', RELEASES_URL);
+  if (mainWindow) mainWindow.webContents.send('ployd:update-install-failed', RELEASES_URL);
   refreshTray();
 }
 
@@ -85,7 +108,7 @@ function createWindow(): void {
     height: 860,
     minWidth: 720,
     minHeight: 480,
-    title: 'Sr. Popo',
+    title: 'Ployd',
     backgroundColor: '#1a1436',
     titleBarStyle: 'hiddenInset', // native mac traffic lights over the UI
     show: false,
@@ -140,7 +163,7 @@ function showWindow(): void {
 function sendMenuAction(action: string): void {
   showWindow();
   if (!mainWindow) return;
-  const send = () => mainWindow!.webContents.send('srpopo:menu-action', action);
+  const send = () => mainWindow!.webContents.send('ployd:menu-action', action);
   if (mainWindow.webContents.isLoading()) {
     mainWindow.webContents.once('did-finish-load', send);
   } else {
@@ -271,7 +294,7 @@ function buildAppMenu(): void {
       role: 'help',
       submenu: [
         {
-          label: 'Sr. Popo Documentation',
+          label: 'Ployd Documentation',
           click: () => shell.openExternal('https://github.com/PauloLimaHQ/srpopo#readme'),
         },
         {
@@ -425,14 +448,14 @@ function refreshTray(): void {
   const menu = Menu.buildFromTemplate([
     ...items,
     { type: 'separator' },
-    { label: 'Open Sr. Popo', click: () => showWindow() },
+    { label: 'Open Ployd', click: () => showWindow() },
     {
       label: 'Open in Browser',
       click: () => httpUrl && shell.openExternal(httpUrl),
     },
     { type: 'separator' },
     {
-      label: 'Quit Sr. Popo',
+      label: 'Quit Ployd',
       accelerator: 'Command+Q',
       click: () => {
         isQuitting = true;
@@ -444,8 +467,8 @@ function refreshTray(): void {
 
   tray.setToolTip(
     running.length
-      ? `Sr. Popo — ${running.length} task${running.length > 1 ? 's' : ''} running`
-      : 'Sr. Popo'
+      ? `Ployd — ${running.length} task${running.length > 1 ? 's' : ''} running`
+      : 'Ployd'
   );
   // Mirror the count on the mac dock icon.
   if (process.platform === 'darwin' && app.dock) {
@@ -518,10 +541,10 @@ async function startServer(): Promise<{ port: number; url: string }> {
 }
 
 app.whenReady().then(async () => {
-  // Native "About Sr. Popo" panel (Sr. Popo ▸ About Sr. Popo) — otherwise macOS
+  // Native "About Ployd" panel (Ployd ▸ About Ployd) — otherwise macOS
   // shows a generic Electron entry with no icon or version.
   app.setAboutPanelOptions({
-    applicationName: 'Sr. Popo',
+    applicationName: 'Ployd',
     applicationVersion: app.getVersion(),
     version: app.getVersion(),
     copyright: 'Copyright © 2026 Paulo Lima',
@@ -544,13 +567,13 @@ app.whenReady().then(async () => {
     autoUpdater.on('update-available', (info) => {
       if (updateReadyVersion || updateDownloadingVersion === info.version) return;
       updateDownloadingVersion = info.version;
-      if (mainWindow) mainWindow.webContents.send('srpopo:update-downloading', info.version);
+      if (mainWindow) mainWindow.webContents.send('ployd:update-downloading', info.version);
       refreshTray();
     });
     autoUpdater.on('update-downloaded', (info) => {
       updateReadyVersion = info.version;
       updateDownloadingVersion = null;
-      if (mainWindow) mainWindow.webContents.send('srpopo:update-ready', info.version);
+      if (mainWindow) mainWindow.webContents.send('ployd:update-ready', info.version);
       refreshTray();
     });
     autoUpdater.on('error', (err) => {
@@ -577,7 +600,7 @@ app.whenReady().then(async () => {
 
 // Keep running in the tray when all windows are closed (don't quit on mac).
 app.on('window-all-closed', () => {
-  // no-op: Sr. Popo lives in the menu bar
+  // no-op: Ployd lives in the menu bar
 });
 
 app.on('before-quit', () => {
@@ -589,15 +612,15 @@ app.on('before-quit', () => {
 });
 
 // Let the renderer ask the main process for its own base URL if it ever needs it.
-ipcMain.handle('srpopo:get-url', () => httpUrl);
+ipcMain.handle('ployd:get-url', () => httpUrl);
 
 // The renderer's "Relaunch to update" banner button — restarts into the
 // already-downloaded update. Only ever reachable once update-downloaded fired.
-ipcMain.handle('srpopo:restart-to-update', () => installUpdate());
+ipcMain.handle('ployd:restart-to-update', () => installUpdate());
 
 // Update events fire whenever the check lands, which may be before the board
 // has loaded (or after a reload dropped the banner). Let it ask for the state.
-ipcMain.handle('srpopo:update-status', () => ({
+ipcMain.handle('ployd:update-status', () => ({
   ready: updateReadyVersion,
   downloading: updateDownloadingVersion,
   installFailed: updateInstallFailed ? RELEASES_URL : null,
@@ -608,7 +631,7 @@ ipcMain.handle('srpopo:update-status', () => ({
 // Opens in the parent of the last-picked repo (store.db.settings.lastRepoFolder)
 // so adding several repos from the same workspace doesn't start from scratch
 // every time; remembers the new parent on a successful pick.
-ipcMain.handle('srpopo:pick-folder', async () => {
+ipcMain.handle('ployd:pick-folder', async () => {
   const defaultPath = store.db.settings.lastRepoFolder || undefined;
   const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow!, {
     title: 'Select a repository folder',

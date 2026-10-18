@@ -5,7 +5,7 @@
  * reports at the end of a session) into an append-only ledger and a set of
  * aggregates the Settings → Usage panel reads from.
  *
- * `total_cost_usd` is not a subscription bill — Sr. Popo never uses an API key
+ * `total_cost_usd` is not a subscription bill — Ployd never uses an API key
  * (see runner.childEnv) — it's Anthropic's per-session cost estimate computed
  * against API list pricing, the same number `claude` shows interactively. That
  * makes it directly comparable across models/projects/periods even though the
@@ -117,7 +117,7 @@ function applyOrchestrationResult(orchestration: Orchestration, event: Record<st
   for (const e of entries) store.appendUsage(e);
 }
 
-// Called from runner.ts's `result` handler for every live "Ask Sr. Popo"
+// Called from runner.ts's `result` handler for every live "Ask Ployd"
 // session (see runner.ask). Ephemeral like a memory-distill session below —
 // never stored as a Task or Grooming — so the caller builds a small
 // UsageSource, using the question as the ledger row's "task title".

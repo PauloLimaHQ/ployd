@@ -1,4 +1,4 @@
-/* Sr. Popo — workspace-menu. No build step: native ES module. */
+/* Ployd — workspace-menu. No build step: native ES module. */
 import { $, state } from '../core/state.js';
 import { anchorMenu, closeIdeMenu, ideMenuOpen, menuArrowNav } from './desktop.js';
 

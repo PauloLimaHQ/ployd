@@ -1,4 +1,4 @@
-/* Sr. Popo — palette. No build step: native ES module. */
+/* Ployd — palette. No build step: native ES module. */
 import { esc } from '../core/api.js';
 import { $, COLUMNS, COLUMN_OF_STATUS, MOD, icon, isLive, state } from '../core/state.js';
 import { defaultEditor, openInIde, revealPath } from './desktop.js';
@@ -18,7 +18,10 @@ import { openSpecsModal } from './specs.js';
 import { closeActiveTab, duplicateTab, tabsOn } from './tabs.js';
 import { openTaskModal } from './task-modal.js';
 import { STATUS_LABEL, allSessions, availableKinds, focusSession, newSession, openTerminalAt } from './terminal.js';
-import { LAYOUT_LABEL, THEME_LABEL, currentLayout, currentTheme, cycleTheme, toggleLayout } from './theme.js';
+import {
+  LAYOUT_LABEL, PALETTE_LABEL, THEME_LABEL, currentLayout, currentPalette, currentTheme, cyclePalette, cycleTheme,
+  toggleLayout,
+} from './theme.js';
 import { currentWorkspaceRepoId, enterWorkspace, exitWorkspace, openWorkspacePopover } from './workspaces.js';
 
 
@@ -82,6 +85,7 @@ function paletteCommands() {
       : []),
     { label: 'Settings', hint: 'Notifications, sounds, Linear key', icon: 'settings', kbd: `${MOD},`, run: () => openSettingsModal() },
     { label: 'Toggle Theme', hint: `Currently ${THEME_LABEL[currentTheme()]} — set it in Settings → Appearance`, icon: 'sun-moon', run: () => cycleTheme() },
+    { label: 'Next Color Theme', hint: `Currently ${PALETTE_LABEL[currentPalette()]} — pick one in Settings → Appearance`, icon: 'palette', run: () => cyclePalette() },
     { label: 'Toggle Layout', hint: `Currently ${LAYOUT_LABEL[currentLayout()]} — switch between the project sidebar and the classic board`, icon: 'panel-left', run: () => toggleLayout() },
     { label: 'Filter Tasks', hint: 'Jump to the filter box', icon: 'search', kbd: '/', run: () => $('#filter-search').focus() },
     { label: 'Keyboard Shortcuts', hint: 'See all shortcuts', icon: 'keyboard', kbd: '?', run: () => openShortcutsModal() },
