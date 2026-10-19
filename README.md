@@ -12,8 +12,8 @@ Pick your backend per task — **Claude Code**, **OpenAI Codex** or **xAI Grok**
 entirely on
 your machine and drives your existing **subscription** login — never an API key.
 
-[![Release](https://img.shields.io/github/v/release/PauloLimaHQ/srpopo?label=download&color=orange)](https://github.com/PauloLimaHQ/srpopo/releases/latest)
-[![CI](https://github.com/PauloLimaHQ/srpopo/actions/workflows/ci.yml/badge.svg)](https://github.com/PauloLimaHQ/srpopo/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/PauloLimaHQ/ployd?label=download&color=orange)](https://github.com/PauloLimaHQ/ployd/releases/latest)
+[![CI](https://github.com/PauloLimaHQ/ployd/actions/workflows/ci.yml/badge.svg)](https://github.com/PauloLimaHQ/ployd/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 ![Platform: macOS · Windows](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows-lightgrey)
 
@@ -21,7 +21,7 @@ your machine and drives your existing **subscription** login — never an API ke
 
 ## Download
 
-Grab the latest installer from the **[Releases page →](https://github.com/PauloLimaHQ/srpopo/releases/latest)**
+Grab the latest installer from the **[Releases page →](https://github.com/PauloLimaHQ/ployd/releases/latest)**
 
 | Platform | File |
 |---|---|

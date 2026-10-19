@@ -1,6 +1,6 @@
 {
   "name": "ployd",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "Ployd — local orchestrator hub for coding-agent tasks across your repos",
   "main": "dist/electron/main.js",
   "scripts": {
@@ -40,13 +40,13 @@
   ],
   "author": "Paulo Lima <pflima92@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/PauloLimaHQ/srpopo#readme",
+  "homepage": "https://github.com/PauloLimaHQ/ployd#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PauloLimaHQ/srpopo.git"
+    "url": "git+https://github.com/PauloLimaHQ/ployd.git"
   },
   "bugs": {
-    "url": "https://github.com/PauloLimaHQ/srpopo/issues"
+    "url": "https://github.com/PauloLimaHQ/ployd/issues"
   },
   "engines": {
     "node": ">=18"
@@ -86,7 +86,7 @@
     "publish": {
       "provider": "github",
       "owner": "PauloLimaHQ",
-      "repo": "srpopo"
+      "repo": "ployd"
     },
     "mac": {
       "category": "public.app-category.developer-tools",

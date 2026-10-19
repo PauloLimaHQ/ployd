@@ -54,7 +54,7 @@ let updateInstallFailed = false; // set once we know the native installer can't 
 // "verifies" fine, then fails that install step silently in the background.
 // Recognize it and fall back to "download manually" instead of a Relaunch
 // button that does nothing.
-const RELEASES_URL = 'https://github.com/PauloLimaHQ/srpopo/releases/latest';
+const RELEASES_URL = 'https://github.com/PauloLimaHQ/ployd/releases/latest';
 
 function notifyUpdateInstallFailed(): void {
   updateReadyVersion = null;
@@ -286,11 +286,11 @@ function buildAppMenu(): void {
       submenu: [
         {
           label: 'Ployd Documentation',
-          click: () => shell.openExternal('https://github.com/PauloLimaHQ/srpopo#readme'),
+          click: () => shell.openExternal('https://github.com/PauloLimaHQ/ployd#readme'),
         },
         {
           label: 'Report an Issue…',
-          click: () => shell.openExternal('https://github.com/PauloLimaHQ/srpopo/issues'),
+          click: () => shell.openExternal('https://github.com/PauloLimaHQ/ployd/issues'),
         },
         { type: 'separator' },
         {
