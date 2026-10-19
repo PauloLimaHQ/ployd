@@ -58,6 +58,7 @@ static with **no build step** (see Conventions).
 | `server/paths.ts` | Resolves the app root (`public/`, `assets/`, `build/`) from source or `dist/`. |
 | `electron/main.ts` | macOS tray/menu-bar app shell; boots the server on a local port. |
 | `electron/preload.ts` | Minimal, safe `contextBridge` (folder picker, base URL). |
+| `electron/legacy.ts` | One-time migration from the app's old name, Sr. Popo (`com.pauloperego.srpopo`): adopts its userData folder and worktrees on first launch, then trashes the old app and its caches. |
 | `public/` | Dependency-free vanilla-JS Kanban UI. No build step — native ES modules (see "The UI module layout"). |
 | `public/app.js` | UI **entry only**: imports the feature modules, calls each one's `init()` in a fixed order, then `boot()`. Don't grow it — new behavior belongs in a feature module. |
 | `public/core/` | What every feature needs: `state.js` (the shared board state, `$`, `icon`, column constants) and `api.js` (`api()`, `toast()`, `esc()`, `lookup()`). Imports nothing from `features/` — it is the bottom of the graph. |
@@ -965,6 +966,11 @@ respect the invariants above, run lint + test, and summarize the diff and any ri
 
 ## Gotchas
 
+- Ployd shipped as **Sr. Popo** with another bundle id, so to the OS it is a different
+  app. `electron/legacy.ts` takes over an old install on first launch (userData,
+  `~/.srpopo/worktrees`, the old bundle and caches); a still-running Sr. Popo makes
+  that launch quit with a dialog instead of booting an empty board. Keep the new
+  `appId` (`com.pauloperego.ployd`) stable from here on.
 - Orphaned `running` tasks from a crash are auto-marked `failed` on server start
   (`store.js`) — don't "fix" that by resurrecting them as running.
 - `db.json` is written atomically (temp file + rename) and debounced; go through

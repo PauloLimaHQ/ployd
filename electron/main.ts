@@ -1,9 +1,11 @@
-import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { app, BrowserWindow, Tray, Menu, nativeImage, shell, ipcMain, dialog, Notification } from 'electron';
 import { autoUpdater } from 'electron-updater';
 
 import { appRoot } from '../server/paths';
+import { WORKTREES_DIR } from '../server/git';
+import * as legacy from './legacy';
 import { resolveClaudeEnv } from './resolve-env';
 
 // Pin the name so dev and packaged builds resolve the SAME userData folder
@@ -12,25 +14,14 @@ app.setName('Ployd');
 
 // The app shipped as "Sr. Popo" before, so existing installs keep everything in
 // a userData folder of that name — db.json and the task logs, but also the
-// board's localStorage (theme, layout, open tabs). Move it under the new name
-// once rather than booting into an empty board. If the move can't happen (the
-// new folder already exists without data, or the rename fails), keep running on
-// the legacy folder: a mis-named folder is better than a lost one.
-const LEGACY_APP_NAME = 'Sr. Popo';
-function adoptLegacyUserData(): void {
-  const current = app.getPath('userData');
-  const legacy = path.join(path.dirname(current), LEGACY_APP_NAME);
-  const hasDb = (dir: string) => fs.existsSync(path.join(dir, 'data', 'db.json'));
-  if (hasDb(current) || !hasDb(legacy)) return;
-  if (!fs.existsSync(current)) {
-    try {
-      fs.renameSync(legacy, current);
-      return;
-    } catch { /* fall through to the legacy folder */ }
-  }
-  app.setPath('userData', legacy);
-}
-adoptLegacyUserData();
+// board's localStorage (theme, layout, open tabs). Take it over now, before the
+// single-instance lock or the store write into the new folder; the rest of the
+// migration (worktrees, the old app and its caches) runs once the app is ready.
+// See electron/legacy.ts.
+const legacyUserData = legacy.adoptUserData(
+  app.getPath('userData'),
+  path.join(path.dirname(app.getPath('userData')), legacy.LEGACY_APP_NAME),
+);
 
 // Repair PATH (and pin CLAUDE_BIN) BEFORE requiring the server: a Finder/Dock-
 // launched app doesn't inherit the shell PATH, so `claude` would otherwise be
@@ -540,7 +531,34 @@ async function startServer(): Promise<{ port: number; url: string }> {
   return server.start(0);
 }
 
+// Everything the old install left besides its userData folder. Worktrees are
+// moved before the server starts, so no task can be dispatched on a stale path;
+// what's left of the old app goes to the Trash rather than being deleted.
+async function finishLegacyMigration(): Promise<void> {
+  const changed = await legacy.adoptWorktrees(store.db.tasks, legacy.legacyWorktreesDir(os.homedir()), WORKTREES_DIR);
+  if (changed) store.save();
+  const stale = legacy.leftovers(process.platform, os.homedir(), process.env, app.getPath('exe'));
+  if (legacyUserData.status === 'leftover') stale.push(legacyUserData.legacy);
+  for (const p of stale) shell.trashItem(p).catch(() => { /* stays; retried next launch */ });
+  if (process.platform === 'win32') legacy.uninstallWindows(process.env);
+}
+
 app.whenReady().then(async () => {
+  // The old app still holds its folder: starting now would boot an empty board
+  // next to it (or two servers on one db.json). Say why, and let the next launch
+  // finish the move.
+  if (legacyUserData.status === 'blocked') {
+    dialog.showMessageBoxSync({
+      type: 'info',
+      message: `Quit ${legacy.LEGACY_APP_NAME} to finish moving to Ployd`,
+      detail: `Ployd takes over your ${legacy.LEGACY_APP_NAME} board, tasks and settings the first time it opens, `
+        + `but it can't yet: ${legacyUserData.reason} Quit ${legacy.LEGACY_APP_NAME}, then open Ployd again.`,
+    });
+    app.exit(0);
+    return;
+  }
+  await finishLegacyMigration();
+
   // Native "About Ployd" panel (Ployd ▸ About Ployd) — otherwise macOS
   // shows a generic Electron entry with no icon or version.
   app.setAboutPanelOptions({

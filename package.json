@@ -68,7 +68,7 @@
     "typescript-eslint": "^8.20.0"
   },
   "build": {
-    "appId": "com.pauloperego.srpopo",
+    "appId": "com.pauloperego.ployd",
     "productName": "Ployd",
     "copyright": "Copyright © 2026 Paulo Lima",
     "asar": true,
